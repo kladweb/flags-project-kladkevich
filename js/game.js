@@ -20,6 +20,7 @@ const game = {
     background: null,
     logo: null
   },
+  answers: null,
   start() {
     this.init();
     this.preload(() => {
@@ -91,7 +92,9 @@ const game = {
     this.update();
   },
   create() {
+    this.flags.getUnsolvedFlags(); //делаем копию объекта с флагами, из которого будем удалять элементы по мере игры
     this.flags.getRandomFlag();
+    this.flags.create();
   },
   update() {
     this.render();
@@ -100,12 +103,13 @@ const game = {
     window.requestAnimationFrame(() => {
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.ctx.drawImage(this.images.background, 0, 0);
-      this.ctx.fillStyle = '#996F3D';
+      this.ctx.fillStyle = '#7a4d40';
       this.ctx.globalAlpha = 0.75;
       this.ctx.fillRect(0, 0, this.width, this.height);
-    })
-  },
-
+      this.ctx.globalAlpha = 1;
+    });
+    this.flags.render();
+  }
 };
 
 window.addEventListener('load', () => {
