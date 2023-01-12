@@ -16,6 +16,13 @@ const game = {
       height: 300,
     }
   },
+  colors: {
+    logCabin: '#1e2418',
+    shiraz: '#b1091d',
+    gallery: '#eaeaea',
+    osloGray: '#939999',
+    spicyMix: '#7a4d40'
+  },
   images: {
     background: null,
     logo: null
@@ -35,7 +42,7 @@ const game = {
   },
   setTextFont() {
     this.ctx.font = '20px Arial';
-    this.ctx.fillStyle = '#ff000e';
+    this.ctx.fillStyle = this.colors.gallery;
   },
   initDimensions() {
     const sizes = {
@@ -90,11 +97,13 @@ const game = {
   run() {
     this.create();
     this.update();
+    this.canvas.addEventListener('click', this.answers.checkAnswer);
   },
   create() {
     this.flags.getUnsolvedFlags(); //делаем копию объекта с флагами, из которого будем удалять элементы по мере игры
     this.flags.getRandomFlag();
     this.flags.create();
+    this.answers.createAnswers();
   },
   update() {
     this.render();
@@ -103,15 +112,17 @@ const game = {
     window.requestAnimationFrame(() => {
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.ctx.drawImage(this.images.background, 0, 0);
-      this.ctx.fillStyle = '#7a4d40';
+      this.ctx.fillStyle = this.colors.spicyMix;
       this.ctx.globalAlpha = 0.75;
       this.ctx.fillRect(0, 0, this.width, this.height);
       this.ctx.globalAlpha = 1;
     });
     this.flags.render();
+    this.answers.renderAnswers();
   }
 };
 
 window.addEventListener('load', () => {
   game.start();
 })
+

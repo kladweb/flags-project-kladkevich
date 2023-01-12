@@ -4,6 +4,7 @@ game.flags = {
   game: game,
   width: 500,
   height: 300,
+  frameWidth: 20,
   offsetX: 0,
   offsetY: 0,
   imagesFlags: null, //объект, содержащий все флаги, заполняется из отдельного js-файла
@@ -30,15 +31,10 @@ game.flags = {
     this.preloadActiveFlag();
   },
   createFrame() {
-    this.game.ctx.strokeStyle = '#eaeaea';
-    this.game.ctx.lineWidth = 20;
+    this.game.ctx.strokeStyle = this.game.colors.gallery;
+    this.game.ctx.lineWidth = this.frameWidth;
     this.game.ctx.lineJoin = 'round';
-    this.game.ctx.beginPath();
-    this.game.ctx.moveTo(this.offsetX, this.offsetY);
-    this.game.ctx.lineTo(this.offsetX + this.width, this.offsetY);
-    this.game.ctx.lineTo(this.offsetX + this.width, this.offsetY + this.height);
-    this.game.ctx.lineTo(this.offsetX, this.offsetY + this.height);
-    this.game.ctx.closePath();
+    // this.game.ctx.beginPath();
   },
   preloadActiveFlag() {
     this.activeImageFlag = new Image();
@@ -47,7 +43,7 @@ game.flags = {
   render() {
     this.activeImageFlag.addEventListener('load', () => {
       window.requestAnimationFrame(() => {
-        this.game.ctx.stroke();
+        this.game.ctx.strokeRect(this.offsetX, this.offsetY, this.width, this.height);
         this.game.ctx.drawImage(this.activeImageFlag, this.offsetX, this.offsetY, this.width, this.height);
       });
     });
