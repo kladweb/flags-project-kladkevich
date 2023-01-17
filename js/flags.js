@@ -31,9 +31,9 @@ game.flags = {
     this.preloadActiveFlag();
   },
   createFrame() {
-    this.game.ctx.strokeStyle = this.game.colors.gallery;
-    this.game.ctx.lineWidth = this.frameWidth;
-    this.game.ctx.lineJoin = 'round';
+    // this.game.ctx.strokeStyle = this.game.colors.gallery;
+    // this.game.ctx.lineWidth = this.frameWidth;
+    // this.game.ctx.lineJoin = 'round';
     // this.game.ctx.beginPath();
   },
   preloadActiveFlag() {
@@ -43,6 +43,9 @@ game.flags = {
   render() {
     this.activeImageFlag.addEventListener('load', () => {
       window.requestAnimationFrame(() => {
+        this.game.ctx.strokeStyle = this.game.colors.gallery;
+        this.game.ctx.lineWidth = this.frameWidth;
+        this.game.ctx.lineJoin = 'round';
         this.game.ctx.strokeRect(this.offsetX, this.offsetY, this.width, this.height);
         this.game.ctx.drawImage(this.activeImageFlag, this.offsetX, this.offsetY, this.width, this.height);
       });

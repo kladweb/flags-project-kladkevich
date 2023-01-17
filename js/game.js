@@ -97,7 +97,8 @@ const game = {
   run() {
     this.create();
     this.update();
-    this.canvas.addEventListener('click', this.answers.checkAnswer);
+    this.canvas.addEventListener('click', this.answers.checkClickAnswer);
+    this.canvas.addEventListener('mousemove', this.answers.checkMoveAnswer);
   },
   create() {
     this.flags.getUnsolvedFlags(); //делаем копию объекта с флагами, из которого будем удалять элементы по мере игры
@@ -125,4 +126,3 @@ const game = {
 window.addEventListener('load', () => {
   game.start();
 })
-
