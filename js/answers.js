@@ -8,11 +8,12 @@ game.answers = {
   frameWidth: 7.5, //толщина рамки вокруг варианта ответа
   offsetX: [],
   offsetY: [],
-  answerOptions: [], //массив с вариантами ответов, один из которых верный
   levelGame: 4,  //количество вариантов ответов
-  activeAnswer: null,  //вариант ответа, на который наведена мышь
-  checkHover: false,  //
+  answerOptions: [], //массив с вариантами ответов, один из которых верный
+  activeAnswer: [],  //массив, определяющий положение курсора относительно рамок с ответами. Например [0,0,0,0] -
+  // курсор не наведен ни на одну рамку; [0,1,0,0] - курсор на втором варианте ответа.
   getRandomAnswers() {
+    this.activeAnswer[0] = 0;
     this.answerOptions[0] = (this.game.flags.imagesFlags[this.game.flags.activeFlag]);
     //из строки выше у нас есть массив с одним правильным ответом. Дополним этот массив другими рандомными
     // вариантами ответов:
@@ -21,6 +22,7 @@ game.answers = {
       let randomAnswer = Object.keys(this.game.flags.imagesFlags)[randomNumberFlag];
       if (this.answerOptions.indexOf(this.game.flags.imagesFlags[randomAnswer]) === -1) {
         this.answerOptions[i] = (this.game.flags.imagesFlags[randomAnswer]);
+        this.activeAnswer.push(0);
       } else {
         i--;
       }
@@ -67,43 +69,14 @@ game.answers = {
       self.game.ctx.fillText(self.answerOptions[num], currentTextX, currentTextY);
     });
   },
-
-  // renderAnswers() {
-  //   this.game.ctx.save();
-  //   this.game.ctx.lineWidth = this.frameWidth;
-  //   this.game.ctx.strokeStyle = this.game.colors.osloGray;
-  //   this.game.ctx.fillStyle = this.game.colors.spicyMix;
-  //   window.requestAnimationFrame(() => {
-  //     for (let i = 0; i < this.levelGame; i++) {
-  //       this.game.ctx.strokeRect(this.offsetX[i], this.offsetY[i], this.width, this.height);
-  //       this.game.ctx.fillRect(this.offsetX[i], this.offsetY[i], this.width, this.height);
-  //     }
-  //   });
-  //   window.requestAnimationFrame(() => {
-  //     this.game.ctx.fillStyle = this.game.colors.gallery;
-  //     for (let i = 0; i < this.levelGame; i++) {
-  //       let currentTextX = this.offsetX[i] + this.width / 2;
-  //       let currentTextY = this.offsetY[i] + this.height / 2;
-  //       this.game.ctx.fillText(this.answerOptions[i], currentTextX, currentTextY);
-  //     }
-  //     this.game.ctx.restore();
-  //   });
-  // },
   checkClickAnswer(e) {
     let oldCanvas = document.getElementById('cva');
     let currentSizes = self.game.canvas.getBoundingClientRect();
     let zoom = oldCanvas.width / currentSizes.width;
-    if (self.checkBorders(e, zoom, 0)) {
-      console.log('Variant1 click');
-    }
-    if (self.checkBorders(e, zoom, 1)) {
-      console.log('Variant2 click');
-    }
-    if (self.checkBorders(e, zoom, 2)) {
-      console.log('Variant3 click');
-    }
-    if (self.checkBorders(e, zoom, 3)) {
-      console.log('Variant4 click');
+    for (let i = 0; i < self.levelGame; i++) {
+      if (self.checkBorders(e, zoom, i)) {
+        console.log('Variant', i, 'click');
+      }
     }
   },
   checkMoveAnswer(e) {
@@ -112,51 +85,21 @@ game.answers = {
     let zoom = oldCanvas.width / currentSizes.width;
     for (let i = 0; i < self.levelGame; i++) {
       if (self.checkBorders(e, zoom, i)) {
-        if (self.activeAnswer !== i) {
-          console.log('Variant ', i, ' move');
+        if (self.activeAnswer[i] !== 1) {
           e.target.style.cursor = 'pointer';
           self.renderAnswer(i, self.game.colors.osloGrayL, self.game.colors.spicyMixL, self.game.colors.white);
-          self.activeAnswer = i;
-          self.checkHover = true;
+          console.log('Variant ', i, ' change');
+          self.activeAnswer[i] = 1;
         }
       } else {
-        self.checkHover = false;
+        if (self.activeAnswer[i] === 1) {
+          e.target.style.cursor = 'default';
+          self.renderAnswer(i, self.game.colors.osloGray, self.game.colors.spicyMix, self.game.colors.gallery);
+          console.log('Variant ', i, ' return');
+          self.activeAnswer[i] = 0;
+        }
       }
-      // else {
-      //   if (self.activeAnswer !== i) {
-      //     e.target.style.cursor = 'default';
-      //     self.activeAnswer = null;
-      //     self.renderAnswer(i, self.game.colors.osloGray, self.game.colors.spicyMix, self.game.colors.gallery);
-      //   }
-      // }
     }
-    // let self.checkHover = false;
-    for (let j = 0; j < self.levelGame; j++) {
-      self.checkHover = self.checkHover || self.checkBorders(e, zoom, j);
-      // console.log(self.checkHover);
-    }
-    if (self.checkHover === false && (self.activeAnswer !== null)) {
-      e.target.style.cursor = 'default';
-      self.activeAnswer = null;
-      self.renderAnswers();
-      console.log(self.activeAnswer);
-      console.log('перерисовка');
-    }
-    // if (self.checkBorders(e, zoom, 0)) {
-    //   if (this.activeAnswer !== 0) {
-    //     console.log('Variant1 move');
-    //     this.activeAnswer = 0;
-    //   }
-    // }
-    // if (self.checkBorders(e, zoom, 1)) {
-    //   console.log('Variant2 move');
-    // }
-    // if (self.checkBorders(e, zoom, 2)) {
-    //   console.log('Variant3 move');
-    // }
-    // if (self.checkBorders(e, zoom, 3)) {
-    //   console.log('Variant4 move');
-    // }
   },
   checkBorders(e, k, number) {
     let borderLeft = e.pageX * k > self.offsetX[number] - self.frameWidth / 2;
