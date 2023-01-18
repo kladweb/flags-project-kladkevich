@@ -21,7 +21,10 @@ const game = {
     shiraz: '#b1091d',
     gallery: '#eaeaea',
     osloGray: '#939999',
-    spicyMix: '#7a4d40'
+    osloGrayL: '#afb8b8',
+    spicyMix: '#7a4d40',
+    spicyMixL: '#905b4b',
+    white: '#FFF',
   },
   images: {
     background: null,

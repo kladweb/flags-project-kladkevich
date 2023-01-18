@@ -5,12 +5,13 @@ game.answers = {
   width: 0, //ширина рамки с вариантом ответа (зависит от ширины картинки флага)
   height: 60, //высота рамки с вариантом ответа
   dist: 30, //расстояние между рамками с ответами
-  frameWidth: 6, //толщина рамки вокруг варианта ответа
+  frameWidth: 7.5, //толщина рамки вокруг варианта ответа
   offsetX: [],
   offsetY: [],
-  answerOptions: [],
+  answerOptions: [], //массив с вариантами ответов, один из которых верный
   levelGame: 4,  //количество вариантов ответов
   activeAnswer: null,  //вариант ответа, на который наведена мышь
+  checkHover: false,  //
   getRandomAnswers() {
     this.answerOptions[0] = (this.game.flags.imagesFlags[this.game.flags.activeFlag]);
     //из строки выше у нас есть массив с одним правильным ответом. Дополним этот массив другими рандомными
@@ -51,20 +52,19 @@ game.answers = {
     }
   },
   renderAnswer(num, colorFrame, colorFill, colorText) {
-    this.game.ctx.lineJoin = 'round';
     window.requestAnimationFrame(() => {
-      this.game.ctx.lineWidth = this.frameWidth;
-      this.game.ctx.strokeStyle = colorFrame;
-      this.game.ctx.fillStyle = colorFill;
-      this.game.ctx.strokeRect(this.offsetX[num], this.offsetY[num], this.width, this.height);
-      this.game.ctx.fillRect(this.offsetX[num], this.offsetY[num], this.width, this.height);
+      self.game.ctx.lineJoin = 'round';
+      self.game.ctx.lineWidth = self.frameWidth;
+      self.game.ctx.strokeStyle = colorFrame;
+      self.game.ctx.fillStyle = colorFill;
+      self.game.ctx.strokeRect(self.offsetX[num], self.offsetY[num], self.width, self.height);
+      self.game.ctx.fillRect(self.offsetX[num], self.offsetY[num], self.width, self.height);
     });
     window.requestAnimationFrame(() => {
-      this.game.ctx.fillStyle = colorText;
-      let currentTextX = this.offsetX[num] + this.width / 2;
-      let currentTextY = this.offsetY[num] + this.height / 2;
-      this.game.ctx.fillText(this.answerOptions[num], currentTextX, currentTextY);
-      console.log(this.answerOptions[num]);
+      self.game.ctx.fillStyle = colorText;
+      let currentTextX = self.offsetX[num] + self.width / 2;
+      let currentTextY = self.offsetY[num] + self.height / 2;
+      self.game.ctx.fillText(self.answerOptions[num], currentTextX, currentTextY);
     });
   },
 
@@ -107,24 +107,40 @@ game.answers = {
     }
   },
   checkMoveAnswer(e) {
-    // let numberHover = null;
-    // let checkUnHover = 0;
     let oldCanvas = document.getElementById('cva');
     let currentSizes = self.game.canvas.getBoundingClientRect();
     let zoom = oldCanvas.width / currentSizes.width;
     for (let i = 0; i < self.levelGame; i++) {
       if (self.checkBorders(e, zoom, i)) {
-        if (this.activeAnswer !== i) {
+        if (self.activeAnswer !== i) {
           console.log('Variant ', i, ' move');
-          this.activeAnswer = i;
           e.target.style.cursor = 'pointer';
+          self.renderAnswer(i, self.game.colors.osloGrayL, self.game.colors.spicyMixL, self.game.colors.white);
+          self.activeAnswer = i;
+          self.checkHover = true;
         }
       } else {
-        if (this.activeAnswer === i) {
-          e.target.style.cursor = 'default';
-          this.activeAnswer = null;
-        }
+        self.checkHover = false;
       }
+      // else {
+      //   if (self.activeAnswer !== i) {
+      //     e.target.style.cursor = 'default';
+      //     self.activeAnswer = null;
+      //     self.renderAnswer(i, self.game.colors.osloGray, self.game.colors.spicyMix, self.game.colors.gallery);
+      //   }
+      // }
+    }
+    // let self.checkHover = false;
+    for (let j = 0; j < self.levelGame; j++) {
+      self.checkHover = self.checkHover || self.checkBorders(e, zoom, j);
+      // console.log(self.checkHover);
+    }
+    if (self.checkHover === false && (self.activeAnswer !== null)) {
+      e.target.style.cursor = 'default';
+      self.activeAnswer = null;
+      self.renderAnswers();
+      console.log(self.activeAnswer);
+      console.log('перерисовка');
     }
     // if (self.checkBorders(e, zoom, 0)) {
     //   if (this.activeAnswer !== 0) {
