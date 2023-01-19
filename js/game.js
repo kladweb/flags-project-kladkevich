@@ -25,6 +25,7 @@ const game = {
     spicyMix: '#7a4d40',
     spicyMixL: '#905b4b',
     white: '#FFF',
+    green: '#61ff10'
   },
   images: {
     background: null,
@@ -100,8 +101,15 @@ const game = {
   run() {
     this.create();
     this.update();
+    this.addListeners();
+  },
+  addListeners() {
     this.canvas.addEventListener('click', this.answers.checkClickAnswer);
     this.canvas.addEventListener('mousemove', this.answers.checkMoveAnswer);
+  },
+  removeListeners(){
+    this.canvas.removeEventListener('click', this.answers.checkClickAnswer);
+    this.canvas.removeEventListener('mousemove', this.answers.checkMoveAnswer);
   },
   create() {
     this.flags.getUnsolvedFlags(); //делаем копию объекта с флагами, из которого будем удалять элементы по мере игры
