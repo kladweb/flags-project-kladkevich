@@ -43,6 +43,7 @@ const game = {
     this.ctx = this.canvas.getContext('2d');
     this.initDimensions();
     this.setTextFont();
+    this.flags.getUnsolvedFlags(); //делаем копию объекта с флагами, из которого будем удалять элементы по мере игры
   },
   setTextFont() {
     this.ctx.font = '20px Arial';
@@ -107,12 +108,17 @@ const game = {
     this.canvas.addEventListener('click', this.answers.checkClickAnswer);
     this.canvas.addEventListener('mousemove', this.answers.checkMoveAnswer);
   },
-  removeListeners(){
+  // addListeners() {
+  //   this.canvas.addEventListener('click', () => {
+  //     this.answers.checkClickAnswer(event);
+  //   });
+  //   this.canvas.addEventListener('mousemove', this.answers.checkMoveAnswer);
+  // },
+  removeListeners() {
     this.canvas.removeEventListener('click', this.answers.checkClickAnswer);
     this.canvas.removeEventListener('mousemove', this.answers.checkMoveAnswer);
   },
   create() {
-    this.flags.getUnsolvedFlags(); //делаем копию объекта с флагами, из которого будем удалять элементы по мере игры
     this.flags.getRandomFlag();
     this.flags.create();
     this.answers.createAnswers();
@@ -129,11 +135,40 @@ const game = {
       this.ctx.fillRect(0, 0, this.width, this.height);
       this.ctx.globalAlpha = 1;
     });
+    this.renderScore();
     this.flags.render();
     this.answers.renderAnswers();
+  },
+  renderScore() {
+    window.requestAnimationFrame(() => {
+      this.ctx.textAlign = 'left';
+      this.ctx.font = '36px Arial';
+      this.ctx.fillStyle = this.colors.gallery;
+      let currentTextX = this.flags.offsetX;
+      let currentTextY = this.flags.offsetY - 40;
+      this.ctx.fillText(`SCORE: ${this.score}`, currentTextX, currentTextY);
+    });
+
+  },
+  continueGame() {
+    window.requestAnimationFrame(() => {
+      this.ctx.textAlign = 'center';
+      this.ctx.font = '32px Arial';
+      this.ctx.fillStyle = this.colors.osloGray;
+      let currentTextX = this.flags.offsetX + this.flags.width / 2;
+      let currentTextY = this.answers.offsetY[this.answers.offsetY.length - 1] + this.answers.height + 32;
+      this.ctx.fillText(`TAB or CLICK to CONTINUE...`, currentTextX, currentTextY);
+    });
+    self = this;
+    this.canvas.addEventListener('click', this.startNextRound);
+  },
+  startNextRound() {
+    self.canvas.removeEventListener('click', self.startNextRound);
+    self.canvas.style.cursor = 'default';
+    self.run();
   }
 };
 
 window.addEventListener('load', () => {
   game.start();
-})
+});

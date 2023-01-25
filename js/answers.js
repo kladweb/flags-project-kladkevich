@@ -56,18 +56,21 @@ game.answers = {
   },
   renderAnswer(num, colorFrame, colorFill, colorText) {
     window.requestAnimationFrame(() => {
-      self.game.ctx.lineJoin = 'round';
-      self.game.ctx.lineWidth = self.frameWidth;
-      self.game.ctx.strokeStyle = colorFrame;
-      self.game.ctx.fillStyle = colorFill;
-      self.game.ctx.fillRect(self.offsetX[num], self.offsetY[num], self.width, self.height);
-      self.game.ctx.strokeRect(self.offsetX[num], self.offsetY[num], self.width, self.height);
+      this.game.ctx.globalAlpha = 1;
+      this.game.ctx.lineJoin = 'round';
+      this.game.ctx.lineWidth = self.frameWidth;
+      this.game.ctx.strokeStyle = colorFrame;
+      this.game.ctx.fillStyle = colorFill;
+      this.game.ctx.fillRect(this.offsetX[num], this.offsetY[num], this.width, this.height);
+      this.game.ctx.strokeRect(this.offsetX[num], this.offsetY[num], this.width, this.height);
     });
     window.requestAnimationFrame(() => {
-      self.game.ctx.fillStyle = colorText;
-      let currentTextX = self.offsetX[num] + self.width / 2;
-      let currentTextY = self.offsetY[num] + self.height / 2;
-      self.game.ctx.fillText(self.game.flags.imagesFlags[self.answerOptions[num]], currentTextX, currentTextY);
+      this.game.ctx.fillStyle = colorText;
+      this.game.ctx.textAlign = 'center';
+      this.game.ctx.font = '20px Arial';
+      let currentTextX = this.offsetX[num] + this.width / 2;
+      let currentTextY = this.offsetY[num] + this.height / 2;
+      this.game.ctx.fillText(this.game.flags.imagesFlags[this.answerOptions[num]], currentTextX, currentTextY);
     });
   },
   checkClickAnswer(e) {
@@ -138,6 +141,7 @@ game.answers = {
       if (transparent >= 1) {
         clearTimeout(timerId);
         self.renderResultColor(num, color);
+        self.renderArrow(num);
       }
     }, 100);
   },
@@ -153,5 +157,110 @@ game.answers = {
         clearTimeout(timerId);
       }
     }, 20);
+  },
+  renderArrow(num) {
+    if (this.checkAnswer(num)) {
+      this.game.score++;
+      this.renderArrowRight1(num);
+    } else {
+      this.renderArrowWrong(num);
+    }
+  },
+  renderArrowRight1(num) {
+    console.log('стартанули', num);
+    let XStart = self.offsetX[num] - self.height / 4 + self.width / 2;
+    let XEnd = self.offsetX[num] + self.width / 2;
+    let XInterval = (XEnd - XStart) / 5;
+    let XCurrent = XStart;
+    let YStart = self.offsetY[num] + self.height / 2;
+    let YEnd = self.offsetY[num] + self.height - self.height / 5;
+    let YInterval = (YEnd - YStart) / 5;
+    let YCurrent = YStart;
+    self.game.ctx.strokeStyle = self.game.colors.green;
+    self.game.ctx.lineJoin = 'round';
+    self.game.ctx.lineCap = 'round';
+    self.game.ctx.beginPath();
+    let timerArrow1 = setInterval(() => {
+      // self.game.ctx.globalAlpha = 0.8;
+      self.game.ctx.lineWidth = 8;
+      self.game.ctx.moveTo(XCurrent, YCurrent);
+      XCurrent = XCurrent + XInterval;
+      YCurrent = YCurrent + YInterval;
+      self.game.ctx.lineTo(XCurrent, YCurrent);
+      self.game.ctx.stroke();
+      if (YCurrent >= YEnd) {
+        console.log('закончили')
+        this.renderArrowRight2(num);
+        clearTimeout(timerArrow1);
+      }
+    }, 30);
+  },
+  renderArrowRight2(num) {
+    console.log('стартанули 2', num);
+    let XStart = self.offsetX[num] + self.width / 2;
+    let XEnd = self.offsetX[num] + self.height / 3 + self.width / 2;
+    let XInterval = (XEnd - XStart) / 5;
+    let XCurrent = XStart;
+    let YStart = self.offsetY[num] + self.height - self.height / 5;
+    let YEnd = self.offsetY[num] + self.height / 4;
+    let YInterval = (YEnd - YStart) / 5;
+    let YCurrent = YStart;
+
+    let timerArrow2 = setInterval(() => {
+
+      // self.game.ctx.beginPath();
+      self.game.ctx.lineWidth = 8;
+      self.game.ctx.moveTo(XCurrent, YCurrent);
+      XCurrent = XCurrent + XInterval;
+      YCurrent = YCurrent + YInterval;
+      self.game.ctx.lineTo(XCurrent, YCurrent);
+      self.game.ctx.stroke();
+      if (YCurrent <= YEnd) {
+        console.log('закончили2')
+        clearTimeout(timerArrow2);
+        this.game.continueGame();
+      }
+    }, 30);
+  },
+  renderArrowWrong(num) {
+    console.log(num, 'стартанули');
+    let XStart = self.offsetX[num] + self.width / 2;
+    let XEnd = [];
+    XEnd[0] = XStart - self.height / 3;
+    XEnd[1] = XStart + self.height / 3;
+    let XInterval = (XEnd[1] - XStart) / 10;
+    let XCurrent = [];
+    XCurrent[0] = XCurrent[1] = XStart;
+    let YStart = self.offsetY[num] + self.height / 2;
+    let YEnd = [];
+    YEnd[0] = YStart - self.height / 3;
+    YEnd[1] = YStart + self.height / 3;
+    let YInterval = (YEnd[1] - YStart) / 10;
+    let YCurrent = [];
+    YCurrent[0] = YCurrent[1] = YStart;
+    self.game.ctx.strokeStyle = self.game.colors.shiraz;
+    self.game.ctx.lineJoin = 'round';
+    self.game.ctx.lineCap = 'round';
+    self.game.ctx.beginPath();
+    let timerArrow3 = setInterval(() => {
+      self.game.ctx.lineWidth = 7;
+      for (let i = 0; i <= 1; i++) {
+        for (let j = 0; j <= 1; j++) {
+          self.game.ctx.moveTo(XStart, YStart);
+          self.game.ctx.lineTo(XCurrent[i], YCurrent[j]);
+          self.game.ctx.stroke();
+        }
+      }
+      XCurrent[0] = XCurrent[0] - XInterval;
+      XCurrent[1] = XCurrent[1] + XInterval;
+      YCurrent[0] = YCurrent[0] - YInterval;
+      YCurrent[1] = YCurrent[1] + YInterval;
+      console.log(YCurrent[1], YEnd[1]);
+      if (YCurrent[1] >= YEnd[1]) {
+        console.log('стояночка');
+        clearTimeout(timerArrow3);
+        this.game.continueGame();
+      }
+    }, 30);
   }
 }
