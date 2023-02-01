@@ -79,7 +79,7 @@ game.answers = {
     let zoom = oldCanvas.width / currentSizes.width;
     for (let i = 0; i < self.levelGame; i++) {
       if (self.checkBorders(e, zoom, i)) {
-        console.log('Variant', i, 'click');
+        // console.log('Variant', i, 'click');
         self.showResult(i);
       }
     }
@@ -93,14 +93,14 @@ game.answers = {
         if (self.activeAnswer[i] !== 1) {
           e.target.style.cursor = 'pointer';
           self.renderAnswer(i, self.game.colors.osloGrayL, self.game.colors.spicyMixL, self.game.colors.white);
-          console.log('Variant ', i, ' change');
+          // console.log('Variant ', i, ' change');
           self.activeAnswer[i] = 1;
         }
       } else {
         if (self.activeAnswer[i] === 1) {
           e.target.style.cursor = 'default';
           self.renderAnswer(i, self.game.colors.osloGray, self.game.colors.spicyMix, self.game.colors.gallery);
-          console.log('Variant ', i, ' return');
+          // console.log('Variant ', i, ' return');
           self.activeAnswer[i] = 0;
         }
       }
@@ -124,9 +124,9 @@ game.answers = {
     this.renderResultWhite(num, colorFrame);
   },
   checkAnswer(num) {
-    console.log(num);
-    console.log(this.answerOptions[num]);
-    console.log(this.game.flags.activeFlag);
+    // console.log(num);
+    // console.log(this.answerOptions[num]);
+    // console.log(this.game.flags.activeFlag);
     return this.answerOptions[num] === this.game.flags.activeFlag;
   },
   renderResultWhite(num, color) {
@@ -167,7 +167,7 @@ game.answers = {
     }
   },
   renderArrowRight1(num) {
-    console.log('стартанули', num);
+    // console.log('стартанули', num);
     let XStart = self.offsetX[num] - self.height / 4 + self.width / 2;
     let XEnd = self.offsetX[num] + self.width / 2;
     let XInterval = (XEnd - XStart) / 5;
@@ -189,14 +189,14 @@ game.answers = {
       self.game.ctx.lineTo(XCurrent, YCurrent);
       self.game.ctx.stroke();
       if (YCurrent >= YEnd) {
-        console.log('закончили')
+        // console.log('закончили')
         this.renderArrowRight2(num);
         clearTimeout(timerArrow1);
       }
     }, 30);
   },
   renderArrowRight2(num) {
-    console.log('стартанули 2', num);
+    // console.log('стартанули 2', num);
     let XStart = self.offsetX[num] + self.width / 2;
     let XEnd = self.offsetX[num] + self.height / 3 + self.width / 2;
     let XInterval = (XEnd - XStart) / 5;
@@ -216,14 +216,14 @@ game.answers = {
       self.game.ctx.lineTo(XCurrent, YCurrent);
       self.game.ctx.stroke();
       if (YCurrent <= YEnd) {
-        console.log('закончили2')
+        // console.log('закончили2')
         clearTimeout(timerArrow2);
         this.game.continueGame();
       }
     }, 30);
   },
   renderArrowWrong(num) {
-    console.log(num, 'стартанули');
+    // console.log(num, 'стартанули');
     let XStart = self.offsetX[num] + self.width / 2;
     let XEnd = [];
     XEnd[0] = XStart - self.height / 3;
@@ -255,9 +255,9 @@ game.answers = {
       XCurrent[1] = XCurrent[1] + XInterval;
       YCurrent[0] = YCurrent[0] - YInterval;
       YCurrent[1] = YCurrent[1] + YInterval;
-      console.log(YCurrent[1], YEnd[1]);
+      // console.log(YCurrent[1], YEnd[1]);
       if (YCurrent[1] >= YEnd[1]) {
-        console.log('стояночка');
+        // console.log('стояночка');
         clearTimeout(timerArrow3);
         this.game.continueGame();
       }

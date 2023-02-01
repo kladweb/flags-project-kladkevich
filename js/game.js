@@ -71,6 +71,7 @@ const game = {
     this.height = Math.min(this.height, sizes.maxHeight);
     this.height = Math.max(this.height, sizes.minHeight);
     this.width = Math.round(sizes.realWidth * this.height / sizes.realHeight);
+    this.canvas.style.width = '100%';
     this.canvas.style.height = '100%';
   },
   fitHeight(sizes) {
@@ -78,11 +79,13 @@ const game = {
     this.width = Math.min(this.width, sizes.maxWidth);
     this.width = Math.max(this.width, sizes.minWidth);
     this.height = Math.round(this.width * sizes.realHeight / sizes.realWidth);
+    this.canvas.style.width = '100%';
     this.canvas.style.height = '100%';
   },
   preload(callback) {
     let loaded = 0;
-    const required = Object.keys(this.images).length;
+    let required = Object.keys(this.images).length;
+    required += Object.keys(this.flags.imagesFlags).length;
     const onAssetLoad = () => {
       ++loaded;
       // console.log(loaded);
@@ -97,6 +100,11 @@ const game = {
       this.images[key] = new Image();
       this.images[key].src = 'img/shared/' + key + '.png';
       this.images[key].addEventListener('load', onAssetLoadCallback);
+    }
+    for (let key in this.flags.imagesFlags) {
+      this.flags.imagesFlagsLoaded[key] = new Image();
+      this.flags.imagesFlagsLoaded[key].src = 'img/flags/' + key + '.png';
+      this.flags.imagesFlagsLoaded[key].addEventListener('load', onAssetLoadCallback);
     }
   },
   run() {
@@ -157,14 +165,14 @@ const game = {
       this.ctx.fillStyle = this.colors.osloGray;
       let currentTextX = this.flags.offsetX + this.flags.width / 2;
       let currentTextY = this.answers.offsetY[this.answers.offsetY.length - 1] + this.answers.height + 32;
-      this.ctx.fillText(`TAB or CLICK to CONTINUE...`, currentTextX, currentTextY);
+      this.ctx.fillText(`TAP or CLICK to CONTINUE...`, currentTextX, currentTextY);
     });
     self = this;
     this.canvas.addEventListener('click', this.startNextRound);
   },
-  startNextRound() {
+  startNextRound(e) {
     self.canvas.removeEventListener('click', self.startNextRound);
-    self.canvas.style.cursor = 'default';
+    e.target.style.cursor = 'default';
     self.run();
   }
 };
