@@ -3,8 +3,8 @@
 game.answers = {
   game: game,
   width: 0, //ширина рамки с вариантом ответа (зависит от ширины картинки флага)
-  height: 60, //высота рамки с вариантом ответа
-  dist: 30, //расстояние между рамками с ответами
+  height: 0, //высота рамки с вариантом ответа
+  dist: 0, //расстояние между рамками с ответами
   frameWidth: 3.5, //толщина рамки вокруг варианта ответа
   offsetX: [],
   offsetY: [],
@@ -36,7 +36,9 @@ game.answers = {
     }
   },
   createAnswers() {
+    this.dist = this.game.flags.width / 25;
     this.width = (this.game.flags.width + this.game.flags.frameWidth) / 2 - this.frameWidth - this.dist / 2;
+    this.height = this.width / 5;
     this.offsetX[0] = this.game.flags.offsetX - (this.game.flags.frameWidth - this.frameWidth) / 2;
     this.offsetY[0] = this.game.flags.offsetY + this.game.flags.height + this.game.flags.frameWidth / 2 + this.dist * 2;
     this.offsetX[1] = this.offsetX[0] + this.width + this.frameWidth + this.dist;
@@ -67,7 +69,8 @@ game.answers = {
     window.requestAnimationFrame(() => {
       this.game.ctx.fillStyle = colorText;
       this.game.ctx.textAlign = 'center';
-      this.game.ctx.font = '20px Arial';
+      const answerSize = this.width / 15;
+      this.game.ctx.font = `${answerSize}px Arial`;
       let currentTextX = this.offsetX[num] + this.width / 2;
       let currentTextY = this.offsetY[num] + this.height / 2;
       this.game.ctx.fillText(this.game.flags.imagesFlags[this.answerOptions[num]], currentTextX, currentTextY);
@@ -132,26 +135,26 @@ game.answers = {
   renderResultWhite(num, color) {
     let transparent = 0;
     let timerId = setInterval(() => {
-      self.game.ctx.globalAlpha = transparent;
-      self.game.ctx.lineWidth = self.frameWidth;
-      self.game.ctx.strokeStyle = '#FFF';
-      self.game.ctx.lineJoin = 'round';
-      self.game.ctx.strokeRect(self.offsetX[num], self.offsetY[num], self.width, self.height);
+      this.game.ctx.globalAlpha = transparent;
+      this.game.ctx.lineWidth = this.frameWidth;
+      this.game.ctx.strokeStyle = '#FFF';
+      this.game.ctx.lineJoin = 'round';
+      this.game.ctx.strokeRect(this.offsetX[num], this.offsetY[num], this.width, this.height);
       transparent += 0.1;
       if (transparent >= 1) {
         clearTimeout(timerId);
-        self.renderResultColor(num, color);
-        self.renderArrow(num);
+        this.renderResultColor(num, color);
+        this.renderArrow(num);
       }
     }, 100);
   },
   renderResultColor(num, color) {
     let transparent = 0;
     let timerId = setInterval(() => {
-      self.game.ctx.lineWidth = self.frameWidth;
-      self.game.ctx.strokeStyle = color;
-      self.game.ctx.lineJoin = 'round';
-      self.game.ctx.strokeRect(self.offsetX[num], self.offsetY[num], self.width, self.height);
+      this.game.ctx.lineWidth = this.frameWidth;
+      this.game.ctx.strokeStyle = color;
+      this.game.ctx.lineJoin = 'round';
+      this.game.ctx.strokeRect(this.offsetX[num], this.offsetY[num], this.width, this.height);
       transparent += 0.1;
       if (transparent >= 1) {
         clearTimeout(timerId);
@@ -168,59 +171,58 @@ game.answers = {
   },
   renderArrowRight1(num) {
     // console.log('стартанули', num);
-    let XStart = self.offsetX[num] - self.height / 4 + self.width / 2;
-    let XEnd = self.offsetX[num] + self.width / 2;
-    let XInterval = (XEnd - XStart) / 5;
+    let XStart = this.offsetX[num] - this.height / 4 + this.width / 2;
+    let XEnd = this.offsetX[num] + this.width / 2;
+    let XInterval = (XEnd - XStart) / 4;
     let XCurrent = XStart;
-    let YStart = self.offsetY[num] + self.height / 2;
-    let YEnd = self.offsetY[num] + self.height - self.height / 5;
-    let YInterval = (YEnd - YStart) / 5;
+    let YStart = this.offsetY[num] + this.height / 2;
+    let YEnd = this.offsetY[num] + this.height - this.height / 5;
+    let YInterval = (YEnd - YStart) / 4;
     let YCurrent = YStart;
-    self.game.ctx.strokeStyle = self.game.colors.green;
-    self.game.ctx.lineJoin = 'round';
-    self.game.ctx.lineCap = 'round';
-    self.game.ctx.beginPath();
+    this.game.ctx.strokeStyle = self.game.colors.green;
+    this.game.ctx.lineJoin = 'round';
+    this.game.ctx.lineCap = 'round';
+    this.game.ctx.beginPath();
     let timerArrow1 = setInterval(() => {
       // self.game.ctx.globalAlpha = 0.8;
-      self.game.ctx.lineWidth = 8;
-      self.game.ctx.moveTo(XCurrent, YCurrent);
+      this.game.ctx.lineWidth = 8;
+      this.game.ctx.moveTo(XCurrent, YCurrent);
       XCurrent = XCurrent + XInterval;
       YCurrent = YCurrent + YInterval;
-      self.game.ctx.lineTo(XCurrent, YCurrent);
-      self.game.ctx.stroke();
-      if (YCurrent >= YEnd) {
+      this.game.ctx.lineTo(XCurrent, YCurrent);
+      this.game.ctx.stroke();
+      if (YCurrent >= YEnd || XCurrent >= XEnd) {
         // console.log('закончили')
         this.renderArrowRight2(num);
         clearTimeout(timerArrow1);
       }
-    }, 30);
+    }, 40);
   },
   renderArrowRight2(num) {
     // console.log('стартанули 2', num);
-    let XStart = self.offsetX[num] + self.width / 2;
-    let XEnd = self.offsetX[num] + self.height / 3 + self.width / 2;
-    let XInterval = (XEnd - XStart) / 5;
+    let XStart = this.offsetX[num] + this.width / 2;
+    let XEnd = this.offsetX[num] + this.height / 3 + this.width / 2;
+    let XInterval = (XEnd - XStart) / 4;
     let XCurrent = XStart;
-    let YStart = self.offsetY[num] + self.height - self.height / 5;
-    let YEnd = self.offsetY[num] + self.height / 4;
-    let YInterval = (YEnd - YStart) / 5;
+    let YStart = this.offsetY[num] + this.height - this.height / 5;
+    let YEnd = this.offsetY[num] + this.height / 4;
+    let YInterval = (YEnd - YStart) / 4;
     let YCurrent = YStart;
-
     let timerArrow2 = setInterval(() => {
 
       // self.game.ctx.beginPath();
-      self.game.ctx.lineWidth = 8;
-      self.game.ctx.moveTo(XCurrent, YCurrent);
+      this.game.ctx.lineWidth = 8;
+      this.game.ctx.moveTo(XCurrent, YCurrent);
       XCurrent = XCurrent + XInterval;
       YCurrent = YCurrent + YInterval;
-      self.game.ctx.lineTo(XCurrent, YCurrent);
-      self.game.ctx.stroke();
-      if (YCurrent <= YEnd) {
+      this.game.ctx.lineTo(XCurrent, YCurrent);
+      this.game.ctx.stroke();
+      if (YCurrent <= YEnd || XCurrent >= XEnd) {
         // console.log('закончили2')
         clearTimeout(timerArrow2);
         this.game.continueGame();
       }
-    }, 30);
+    }, 40);
   },
   renderArrowWrong(num) {
     // console.log(num, 'стартанули');

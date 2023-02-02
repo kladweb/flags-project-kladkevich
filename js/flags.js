@@ -28,13 +28,13 @@ game.flags = {
     this.preloadActiveFlag();
     // let aspectRatioFlag = this.activeImageFlag.width / this.activeImageFlag.height;
     let aspectRatioWindow = window.innerWidth / window.innerHeight;
-    console.log(this.activeImageFlag.width);
-    console.log(this.activeImageFlag.height);
-    console.log(window.innerWidth);
-    console.log(window.innerHeight);
-    console.log(aspectRatioWindow);
-    console.log(this.game.width);
-    console.log(this.game.height);
+    // console.log(this.activeImageFlag.width);
+    // console.log(this.activeImageFlag.height);
+    // console.log(window.innerWidth);
+    // console.log(window.innerHeight);
+    // console.log(aspectRatioWindow);
+    // console.log(this.game.width);
+    // console.log(this.game.height);
 
     if (aspectRatioWindow <= 1) {
       this.width = this.game.width * 0.8;
@@ -44,11 +44,15 @@ game.flags = {
       this.height = this.game.height / 2.5;
       this.width = this.height * 2;
     }
-    this.height = this.width / 2;
+    // this.height = this.width / 2;
 
     const flagWidth = Math.min(this.game.width, this.width);
     this.offsetX = (this.game.width - flagWidth) / 2;
-    this.offsetY = (this.game.height - (this.height + this.game.answers.height * 2 + this.game.answers.dist)) / 3;
+    this.offsetY = (window.innerHeight - this.height * 1.6) / 2;
+    // console.log(window.innerHeight);
+    // console.log(window.outerHeight);
+    // console.log(window.screen);
+
 
   },
   preloadActiveFlag() {
@@ -59,7 +63,7 @@ game.flags = {
       let aspectRatioFlag = this.activeImageFlag.width / this.activeImageFlag.height;
       let imageWidth = this.height * aspectRatioFlag;
       let imageX = this.offsetX + (this.width - imageWidth) / 2;
-      this.game.ctx.globalAlpha = 0;
+      // this.game.ctx.globalAlpha = 0;
       this.game.ctx.strokeStyle = this.game.colors.gallery;
       this.game.ctx.lineWidth = this.frameWidth;
       this.game.ctx.lineJoin = 'round';

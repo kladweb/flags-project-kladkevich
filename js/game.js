@@ -150,10 +150,11 @@ const game = {
   renderScore() {
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'left';
-      this.ctx.font = '36px Arial';
+      const scoreSize = this.flags.width / 20;
+      this.ctx.font = `${scoreSize}px Arial`;
       this.ctx.fillStyle = this.colors.gallery;
       let currentTextX = this.flags.offsetX;
-      let currentTextY = this.flags.offsetY - 40;
+      let currentTextY = this.flags.offsetY - this.flags.frameWidth / 2 - scoreSize;
       this.ctx.fillText(`SCORE: ${this.score}`, currentTextX, currentTextY);
     });
 
