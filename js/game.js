@@ -6,6 +6,7 @@ const game = {
   width: 0,
   height: 0,
   score: 0,
+  live: 5,
   dimensions: {
     max: {
       width: 1920,
@@ -29,7 +30,8 @@ const game = {
   },
   images: {
     background: null,
-    logo: null
+    logo: null,
+    human: null
   },
   answers: null,
   start() {
@@ -144,6 +146,7 @@ const game = {
       this.ctx.globalAlpha = 1;
     });
     this.renderScore();
+    this.renderLive();
     this.flags.render();
     this.answers.renderAnswers();
   },
@@ -157,15 +160,30 @@ const game = {
       let currentTextY = this.flags.offsetY - this.flags.frameWidth / 2 - scoreSize;
       this.ctx.fillText(`SCORE: ${this.score}`, currentTextX, currentTextY);
     });
-
+  },
+  renderLive() {
+    window.requestAnimationFrame(() => {
+      this.ctx.textAlign = 'left';
+      const liveSize = this.flags.width / 20;
+      this.ctx.font = `${liveSize}px Arial`;
+      this.ctx.fillStyle = this.colors.gallery;
+      let currentTextX = this.flags.offsetX + this.flags.width - liveSize * String(this.live).length / 2;
+      let currentTextY = this.flags.offsetY - this.flags.frameWidth / 2 - liveSize;
+      this.ctx.fillText(`${this.live}`, currentTextX, currentTextY);
+      console.log(this.images.human);
+      currentTextX -= liveSize * (String(this.live).length + 1.5) / 2;
+      currentTextY -= liveSize * 0.6;
+      this.ctx.drawImage(this.images.human, currentTextX, currentTextY, liveSize, liveSize);
+    });
   },
   continueGame() {
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'center';
-      this.ctx.font = '32px Arial';
+      const infoSize = this.flags.width / 17;
+      this.ctx.font = `${infoSize}px Arial`;
       this.ctx.fillStyle = this.colors.osloGray;
       let currentTextX = this.flags.offsetX + this.flags.width / 2;
-      let currentTextY = this.answers.offsetY[this.answers.offsetY.length - 1] + this.answers.height + 32;
+      let currentTextY = this.answers.offsetY[this.answers.offsetY.length - 1] + this.answers.height + infoSize;
       this.ctx.fillText(`TAP or CLICK to CONTINUE...`, currentTextX, currentTextY);
     });
     self = this;

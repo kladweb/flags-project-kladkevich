@@ -166,6 +166,7 @@ game.answers = {
       this.game.score++;
       this.renderArrowRight1(num);
     } else {
+      this.game.live--;
       this.renderArrowWrong(num);
     }
   },

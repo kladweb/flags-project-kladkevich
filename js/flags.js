@@ -41,16 +41,20 @@ game.flags = {
       this.height = this.width / 2;
     }
     if (aspectRatioWindow > 1) {
-      this.height = this.game.height / 2.5;
+      this.height = this.game.height / 3;
       this.width = this.height * 2;
     }
     // this.height = this.width / 2;
 
     const flagWidth = Math.min(this.game.width, this.width);
     this.offsetX = (this.game.width - flagWidth) / 2;
-    this.offsetY = (window.innerHeight - this.height * 1.6) / 2;
+    this.offsetY = (this.game.height - this.height * 1.6) / 2;
+    // console.log('this.offsetY', this.offsetY);
     // console.log(window.innerHeight);
     // console.log(window.outerHeight);
+    // console.log(document.documentElement.clientHeight);
+    // console.log(this.game.height);
+
     // console.log(window.screen);
 
 
@@ -63,12 +67,14 @@ game.flags = {
       let aspectRatioFlag = this.activeImageFlag.width / this.activeImageFlag.height;
       let imageWidth = this.height * aspectRatioFlag;
       let imageX = this.offsetX + (this.width - imageWidth) / 2;
-      // this.game.ctx.globalAlpha = 0;
+      this.game.ctx.globalAlpha = 0.3;
       this.game.ctx.strokeStyle = this.game.colors.gallery;
       this.game.ctx.lineWidth = this.frameWidth;
       this.game.ctx.lineJoin = 'round';
       this.game.ctx.strokeRect(this.offsetX, this.offsetY, this.width, this.height);
-      this.game.ctx.fillRect(this.offsetX, this.offsetY, this.width, this.height);
+      const XFill = this.offsetX + this.frameWidth / 2;
+      const YFill = this.offsetY + this.frameWidth / 2;
+      this.game.ctx.fillRect(XFill, YFill, this.width - this.frameWidth, this.height - this.frameWidth);
       this.game.ctx.globalAlpha = 1;
       this.game.ctx.drawImage(this.activeImageFlag, imageX, this.offsetY, imageWidth, this.height);
     });
