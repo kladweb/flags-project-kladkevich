@@ -49,7 +49,6 @@ game.answers = {
     this.offsetY[3] = this.offsetY[2];
     this.game.ctx.textAlign = 'center';
     this.game.ctx.textBaseline = 'middle';
-    self = this;
   },
   renderAnswers() {
     for (let i = 0; i < this.levelGame; i++) {
@@ -60,7 +59,7 @@ game.answers = {
     window.requestAnimationFrame(() => {
       this.game.ctx.globalAlpha = 1;
       this.game.ctx.lineJoin = 'round';
-      this.game.ctx.lineWidth = self.frameWidth;
+      this.game.ctx.lineWidth = this.frameWidth;
       this.game.ctx.strokeStyle = colorFrame;
       this.game.ctx.fillStyle = colorFill;
       this.game.ctx.fillRect(this.offsetX[num], this.offsetY[num], this.width, this.height);
@@ -78,51 +77,51 @@ game.answers = {
   },
   checkClickAnswer(e) {
     let oldCanvas = document.getElementById('cva');
-    let currentSizes = self.game.canvas.getBoundingClientRect();
+    let currentSizes = this.game.canvas.getBoundingClientRect();
     let zoom = oldCanvas.width / currentSizes.width;
-    for (let i = 0; i < self.levelGame; i++) {
-      if (self.checkBorders(e, zoom, i)) {
+    for (let i = 0; i < this.levelGame; i++) {
+      if (this.checkBorders(e, zoom, i)) {
         // console.log('Variant', i, 'click');
-        self.showResult(i);
+        this.showResult(i);
       }
     }
   },
   checkMoveAnswer(e) {
     let oldCanvas = document.getElementById('cva');
-    let currentSizes = self.game.canvas.getBoundingClientRect();
+    let currentSizes = this.game.canvas.getBoundingClientRect();
     let zoom = oldCanvas.width / currentSizes.width;
-    for (let i = 0; i < self.levelGame; i++) {
-      if (self.checkBorders(e, zoom, i)) {
-        if (self.activeAnswer[i] !== 1) {
+    for (let i = 0; i < this.levelGame; i++) {
+      if (this.checkBorders(e, zoom, i)) {
+        if (this.activeAnswer[i] !== 1) {
           e.target.style.cursor = 'pointer';
-          self.renderAnswer(i, self.game.colors.osloGrayL, self.game.colors.spicyMixL, self.game.colors.white);
+          this.renderAnswer(i, this.game.colors.osloGrayL, this.game.colors.spicyMixL, this.game.colors.white);
           // console.log('Variant ', i, ' change');
-          self.activeAnswer[i] = 1;
+          this.activeAnswer[i] = 1;
         }
       } else {
-        if (self.activeAnswer[i] === 1) {
+        if (this.activeAnswer[i] === 1) {
           e.target.style.cursor = 'default';
-          self.renderAnswer(i, self.game.colors.osloGray, self.game.colors.spicyMix, self.game.colors.gallery);
+          this.renderAnswer(i, this.game.colors.osloGray, this.game.colors.spicyMix, this.game.colors.gallery);
           // console.log('Variant ', i, ' return');
-          self.activeAnswer[i] = 0;
+          this.activeAnswer[i] = 0;
         }
       }
     }
   },
   checkBorders(e, k, number) {
-    let borderLeft = e.pageX * k > self.offsetX[number] - self.frameWidth / 2;
-    let borderRight = e.pageX * k < self.offsetX[number] + self.width + self.frameWidth / 2;
-    let borderTop = e.pageY * k > self.offsetY[number] - self.frameWidth / 2;
-    let borderBottom = e.pageY * k < self.offsetY[number] + self.height + self.frameWidth / 2;
+    let borderLeft = e.pageX * k > this.offsetX[number] - this.frameWidth / 2;
+    let borderRight = e.pageX * k < this.offsetX[number] + this.width + this.frameWidth / 2;
+    let borderTop = e.pageY * k > this.offsetY[number] - this.frameWidth / 2;
+    let borderBottom = e.pageY * k < this.offsetY[number] + this.height + this.frameWidth / 2;
     return borderLeft && borderRight && borderTop && borderBottom;
   },
   showResult(num) {
     this.game.removeListeners();
     let colorFrame;
     if (this.checkAnswer(num)) {
-      colorFrame = self.game.colors.green;
+      colorFrame = this.game.colors.green;
     } else {
-      colorFrame = self.game.colors.shiraz;
+      colorFrame = this.game.colors.shiraz;
     }
     this.renderResultWhite(num, colorFrame);
   },
@@ -180,7 +179,7 @@ game.answers = {
     let YEnd = this.offsetY[num] + this.height - this.height / 5;
     let YInterval = (YEnd - YStart) / 4;
     let YCurrent = YStart;
-    this.game.ctx.strokeStyle = self.game.colors.green;
+    this.game.ctx.strokeStyle = this.game.colors.green;
     this.game.ctx.lineJoin = 'round';
     this.game.ctx.lineCap = 'round';
     this.game.ctx.beginPath();
@@ -227,31 +226,31 @@ game.answers = {
   },
   renderArrowWrong(num) {
     // console.log(num, 'стартанули');
-    let XStart = self.offsetX[num] + self.width / 2;
+    let XStart = this.offsetX[num] + this.width / 2;
     let XEnd = [];
-    XEnd[0] = XStart - self.height / 3;
-    XEnd[1] = XStart + self.height / 3;
+    XEnd[0] = XStart - this.height / 3;
+    XEnd[1] = XStart + this.height / 3;
     let XInterval = (XEnd[1] - XStart) / 10;
     let XCurrent = [];
     XCurrent[0] = XCurrent[1] = XStart;
-    let YStart = self.offsetY[num] + self.height / 2;
+    let YStart = this.offsetY[num] + this.height / 2;
     let YEnd = [];
-    YEnd[0] = YStart - self.height / 3;
-    YEnd[1] = YStart + self.height / 3;
+    YEnd[0] = YStart - this.height / 3;
+    YEnd[1] = YStart + this.height / 3;
     let YInterval = (YEnd[1] - YStart) / 10;
     let YCurrent = [];
     YCurrent[0] = YCurrent[1] = YStart;
-    self.game.ctx.strokeStyle = self.game.colors.shiraz;
-    self.game.ctx.lineJoin = 'round';
-    self.game.ctx.lineCap = 'round';
-    self.game.ctx.beginPath();
+    this.game.ctx.strokeStyle = this.game.colors.shiraz;
+    this.game.ctx.lineJoin = 'round';
+    this.game.ctx.lineCap = 'round';
+    this.game.ctx.beginPath();
     let timerArrow3 = setInterval(() => {
-      self.game.ctx.lineWidth = 7;
+      this.game.ctx.lineWidth = 7;
       for (let i = 0; i <= 1; i++) {
         for (let j = 0; j <= 1; j++) {
-          self.game.ctx.moveTo(XStart, YStart);
-          self.game.ctx.lineTo(XCurrent[i], YCurrent[j]);
-          self.game.ctx.stroke();
+          this.game.ctx.moveTo(XStart, YStart);
+          this.game.ctx.lineTo(XCurrent[i], YCurrent[j]);
+          this.game.ctx.stroke();
         }
       }
       XCurrent[0] = XCurrent[0] - XInterval;

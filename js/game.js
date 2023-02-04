@@ -115,8 +115,10 @@ const game = {
     this.addListeners();
   },
   addListeners() {
-    this.canvas.addEventListener('click', this.answers.checkClickAnswer);
-    this.canvas.addEventListener('mousemove', this.answers.checkMoveAnswer);
+    this.checkClickAnswerBind = this.answers.checkClickAnswer.bind(this.answers);
+    this.checkMoveAnswerBind = this.answers.checkMoveAnswer.bind(this.answers);
+    this.canvas.addEventListener('click', this.checkClickAnswerBind);
+    this.canvas.addEventListener('mousemove', this.checkMoveAnswerBind);
   },
   // addListeners() {
   //   this.canvas.addEventListener('click', () => {
@@ -125,8 +127,8 @@ const game = {
   //   this.canvas.addEventListener('mousemove', this.answers.checkMoveAnswer);
   // },
   removeListeners() {
-    this.canvas.removeEventListener('click', this.answers.checkClickAnswer);
-    this.canvas.removeEventListener('mousemove', this.answers.checkMoveAnswer);
+    this.canvas.removeEventListener('click', this.checkClickAnswerBind);
+    this.canvas.removeEventListener('mousemove', this.checkMoveAnswerBind);
   },
   create() {
     this.flags.getRandomFlag();
@@ -170,7 +172,7 @@ const game = {
       let currentTextX = this.flags.offsetX + this.flags.width - liveSize * String(this.live).length / 2;
       let currentTextY = this.flags.offsetY - this.flags.frameWidth / 2 - liveSize;
       this.ctx.fillText(`${this.live}`, currentTextX, currentTextY);
-      console.log(this.images.human);
+      // console.log(this.images.human);
       currentTextX -= liveSize * (String(this.live).length + 1.5) / 2;
       currentTextY -= liveSize * 0.6;
       this.ctx.drawImage(this.images.human, currentTextX, currentTextY, liveSize, liveSize);
@@ -186,13 +188,13 @@ const game = {
       let currentTextY = this.answers.offsetY[this.answers.offsetY.length - 1] + this.answers.height + infoSize;
       this.ctx.fillText(`TAP or CLICK to CONTINUE...`, currentTextX, currentTextY);
     });
-    self = this;
-    this.canvas.addEventListener('click', this.startNextRound);
+    this.startNextRoundBind = this.startNextRound.bind(this);
+    this.canvas.addEventListener('click', this.startNextRoundBind);
   },
   startNextRound(e) {
-    self.canvas.removeEventListener('click', self.startNextRound);
+    this.canvas.removeEventListener('click', this.startNextRoundBind);
     e.target.style.cursor = 'default';
-    self.run();
+    this.run();
   }
 };
 
