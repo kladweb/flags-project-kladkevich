@@ -114,6 +114,14 @@ const game = {
     this.update();
     this.addListeners();
   },
+  create() {
+    this.flags.getRandomFlag();
+    this.flags.create();
+    this.answers.createAnswers();
+  },
+  update() {
+    this.render();
+  },
   addListeners() {
     this.checkClickAnswerBind = this.answers.checkClickAnswer.bind(this.answers);
     this.checkMoveAnswerBind = this.answers.checkMoveAnswer.bind(this.answers);
@@ -129,14 +137,6 @@ const game = {
   removeListeners() {
     this.canvas.removeEventListener('click', this.checkClickAnswerBind);
     this.canvas.removeEventListener('mousemove', this.checkMoveAnswerBind);
-  },
-  create() {
-    this.flags.getRandomFlag();
-    this.flags.create();
-    this.answers.createAnswers();
-  },
-  update() {
-    this.render();
   },
   render() {
     window.requestAnimationFrame(() => {
