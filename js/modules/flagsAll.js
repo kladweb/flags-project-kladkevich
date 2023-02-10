@@ -1,6 +1,4 @@
-'use strict';
-
-game.flags.imagesFlags = {
+export const flagsAll = {
   ad: 'Andorra',
   ae: 'United Arab Emirates',
   af: 'Afghanistan',
