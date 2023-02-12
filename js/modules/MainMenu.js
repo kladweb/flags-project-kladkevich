@@ -1,4 +1,4 @@
-import { Component } from './Component.js';
+import {Component} from './Component.js';
 import {Game} from './Game.js';
 
 export class MainMenu extends Component {
@@ -11,23 +11,32 @@ export class MainMenu extends Component {
     this.butWidth = 0; //размеры кнопок главного меню
     this.butHeight = 0;
     this.butNames = ['PLAY', 'HI SCORES', 'SETTINGS', 'ABOUT'];
-    this.images = {
+    this.imgM = {
       logo: null,
-      human: null,
       button: null
     };
     this.activeButton = [0, 0, 0, 0];
+    // self = this;
   }
 
   initMenu() {
     this.start();
-    this.imageBackground.addEventListener('load', () => {
+    window.addEventListener('resize', this.reRunMenu.bind(this));
+    this.preloadStartData(() => {
       this.loadMenuData();
     });
   }
 
+  preloadStartData(callback) {
+    this.imageBackground = new Image();
+    this.imageBackground.src = `img/shared/background.png`;
+    this.imageBackground.addEventListener('load', callback);
+  }
+
   loadMenuData() {
+    this.renderBackground();
     this.renderLoader();
+    this.setCursor();
     this.preloadMenuData(() => {
       this.runMenu();
     });
@@ -35,10 +44,9 @@ export class MainMenu extends Component {
 
   preloadMenuData(callback) {
     let loaded = 0;
-    let required = Object.keys(this.images).length;
+    let required = Object.keys(this.imgM).length;
     const onAssetLoad = () => {
       ++loaded;
-      // console.log(loaded);
       if (loaded >= required) {
         callback();
       }
@@ -47,30 +55,46 @@ export class MainMenu extends Component {
   }
 
   preloadImages(onAssetLoadCallback) {
-    for (let key in this.images) {
-      this.images[key] = new Image();
-      this.images[key].src = 'img/shared/' + key + '.png';
-      this.images[key].addEventListener('load', onAssetLoadCallback);
+    for (let key in this.imgM) {
+      this.imgM[key] = new Image();
+      this.imgM[key].src = 'img/shared/' + key + '.png';
+      this.imgM[key].addEventListener('load', onAssetLoadCallback);
     }
   }
 
   runMenu() {
     this.createMenuSizes();
-    this.renderMenu();
     this.addListeners();
+    this.renderMenu();
+  }
+
+  reRunMenu() {
+    this.initDimensions();
+    this.createMenuSizes();
+    this.renderMenu();
   }
 
   renderMenu() {
-    this.renderBackground();
-    this.renderLogo();
-    this.renderTitle();
-    this.renderMenuButtons();
+    const promise = new Promise(res => res());
+    promise.then(() => {
+      this.renderBackground();
+      console.log('рендер промис');
+    })
+    .then(() => {
+      this.renderLogo();
+    })
+    .then(() => {
+      this.renderTitle();
+    })
+    .then(() => {
+      this.renderMenuButtons();
+    });
   }
 
   createMenuSizes() {
     let aspectRatioWindow = window.innerWidth / window.innerHeight;
-    let aspectRatioLogo = this.images.logo.width / this.images.logo.height;
-    let aspectRatioButton = this.images.button.width / this.images.button.height;
+    let aspectRatioLogo = this.imgM.logo.width / this.imgM.logo.height;
+    let aspectRatioButton = this.imgM.button.width / this.imgM.button.height;
     if (aspectRatioWindow <= 1) {
       console.log('|', aspectRatioWindow);
       this.logoWidth = this.width * 0.6;
@@ -126,7 +150,7 @@ export class MainMenu extends Component {
 
   renderLogo() {
     window.requestAnimationFrame(() => {
-      this.ctx.drawImage(this.images.logo, this.logoOffsetX, this.logoOffsetY, this.logoWidth, this.logoHeight);
+      this.ctx.drawImage(this.imgM.logo, this.logoOffsetX, this.logoOffsetY, this.logoWidth, this.logoHeight);
     });
   }
 
@@ -134,7 +158,7 @@ export class MainMenu extends Component {
     window.requestAnimationFrame(() => {
       this.ctx.globalAlpha = 0.75;
       for (let i = 0; i <= 3; i++) {
-        this.renderButton(this.images.button, this.butOffsetX[i], this.butOffsetY[i], this.butWidth, this.butHeight);
+        this.renderButton(this.imgM.button, this.butOffsetX[i], this.butOffsetY[i], this.butWidth, this.butHeight);
       }
       this.ctx.globalAlpha = 1;
       const textSize = this.butHeight / 2.5;
@@ -190,7 +214,7 @@ export class MainMenu extends Component {
         if (this.activeButton[i] !== 1) {
           e.target.style.cursor = 'url(../img/cursors/earth-pointer.png), pointer';
           this.ctx.globalAlpha = 1;
-          this.renderButton(this.images.button, this.butOffsetX[i], this.butOffsetY[i], this.butWidth, this.butHeight);
+          this.renderButton(this.imgM.button, this.butOffsetX[i], this.butOffsetY[i], this.butWidth, this.butHeight);
           let currentTextX = this.butOffsetX[i] + this.butWidth / 2;
           let currentTextY = this.butOffsetY[i] + this.butHeight / 1.8;
           this.renderButtonText(`${this.butNames[i]}`, currentTextX, currentTextY);

@@ -24,13 +24,10 @@ export class Component {
         height: 300,
       }
     }
-    // this.init();
-    // this.renderStartBackground();
   }
 
   start() {
     this.init();
-    this.renderStartBackground();
   }
 
   init() {
@@ -75,25 +72,8 @@ export class Component {
     this.canvas.style.height = '100%';
   }
 
-  renderStartBackground() {
-    this.preloadStartData(() => {
-      this.run();
-    });
-  }
-
-  run() {
-    this.renderBackground();
-    this.setCursor();
-  }
-
   setCursor() {
     this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
-  }
-
-  preloadStartData(callback) {
-    this.imageBackground = new Image();
-    this.imageBackground.src = `img/shared/background.png`;
-    this.imageBackground.addEventListener('load', callback);
   }
 
   renderBackground() {
@@ -104,6 +84,8 @@ export class Component {
       this.ctx.globalAlpha = 0.75;
       this.ctx.fillRect(0, 0, this.width, this.height);
       this.ctx.globalAlpha = 1;
+      // this.changeBack = new Event('changeBack'); // сообщаем ВСЕМ заинтересованным
+      // document.dispatchEvent(this.changeBack); // что бэкграунд отрендерился
     });
   }
 
@@ -119,26 +101,4 @@ export class Component {
       this.ctx.fillText(`LOAD GAME...`, offsetXLoader, offsetYLoader);
     })
   }
-
-  // preloadData(callback) {
-  //   let loaded = 0;
-  //   let required = Object.keys(this.images).length;
-  //   // required += Object.keys(this.flags.imagesFlags).length;
-  //   const onAssetLoad = () => {
-  //     ++loaded;
-  //     // console.log(loaded);
-  //     if (loaded >= required) {
-  //       callback();
-  //     }
-  //   };
-  //   this.preloadImages(onAssetLoad);
-  // }
-  //
-  // preloadImages(onAssetLoadCallback) {
-  //   for (let key in this.images) {
-  //     this.images[key] = new Image();
-  //     this.images[key].src = 'img/shared/' + key + '.png';
-  //     this.images[key].addEventListener('load', onAssetLoadCallback);
-  //   }
-  // }
 }

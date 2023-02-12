@@ -4,7 +4,7 @@ import {Game} from './Game.js';
 export class Spa {
   constructor() {
     this.SPAStateH = null; //текущее состояние приложения
-    this.mainMenu = null;
+    this.main = null;
     this.tryBack = false;
     window.addEventListener('hashchange', this.switchToStateFromURLHash);
     self = this;
@@ -70,8 +70,12 @@ export class Spa {
   }
 
   startGamePage() {
+    if (this.main) {
+      this.main.removeListeners();
+    }
     if (!this.game) {
       this.game = new Game(this);
+      console.log('NEW GAME');
     }
     if (this.tryBack !== true) {
       this.game.initGame();
@@ -101,6 +105,7 @@ export class Spa {
       self.switchToGamePage();
     } else {
       self.tryBack = false;
+      self.game.removeListeners();
     }
   }
 
