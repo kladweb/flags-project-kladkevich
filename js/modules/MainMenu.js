@@ -95,7 +95,7 @@ export class MainMenu extends Component {
     let aspectRatioWindow = window.innerWidth / window.innerHeight;
     let aspectRatioLogo = this.imgM.logo.width / this.imgM.logo.height;
     let aspectRatioButton = this.imgM.button.width / this.imgM.button.height;
-    if (aspectRatioWindow <= 1) {
+    if (aspectRatioWindow <= 0.5) {
       console.log('|', aspectRatioWindow);
       this.logoWidth = this.width * 0.6;
       this.logoHeight = this.logoWidth / aspectRatioLogo;
@@ -114,16 +114,40 @@ export class MainMenu extends Component {
         this.butOffsetX[i] = (this.width - this.butWidth) / 2;
         this.butOffsetY[i] = this.logoOffsetY + this.logoHeight + this.butHeight * 0.5 + this.butHeight * 1.25 * i;
       }
-
     }
-    if (aspectRatioWindow > 1) {
+    if (aspectRatioWindow > 0.5 && aspectRatioWindow <= 1.5) {
+      console.log('|', aspectRatioWindow);
+      this.logoWidth = this.width * 0.5 / ((aspectRatioWindow < 1) ? 1 : aspectRatioWindow);
+      this.logoHeight = this.logoWidth / aspectRatioLogo;
+      this.logoOffsetY = (this.height - this.logoHeight * 1.5) / 2;
+      this.logoOffsetX = (this.width - this.logoWidth) / 2;
+
+      this.titleSize = this.width / 12 / ((aspectRatioWindow < 1) ? 1 : aspectRatioWindow);
+      this.offsetXTitle = this.width / 2;
+      this.offsetYTitle = this.logoOffsetY / 2;
+
+      this.butWidth = this.logoWidth / 1.2;
+      this.butHeight = this.butWidth / aspectRatioButton;
+      this.butOffsetX = [];
+      this.butOffsetY = [];
+      for (let i = 0; i <= 1; i++) {
+        let offsetBut = (this.width - this.butWidth * 2) / 5;
+        this.butOffsetX[0] = this.butOffsetX[2] = offsetBut * 2;
+        this.butOffsetX[1] = this.butOffsetX[3] = offsetBut * 3 + this.butWidth;
+        this.butOffsetY[1] = this.butOffsetY[0] = this.logoOffsetY + this.logoHeight + this.butHeight * 0.5;
+        this.butOffsetY[2] = this.logoOffsetY + this.logoHeight + this.butHeight * 0.5 + this.butHeight * 1.25;
+        this.butOffsetY[3] = this.butOffsetY[2];
+      }
+    }
+
+    if (aspectRatioWindow > 1.5) {
       console.log('---', aspectRatioWindow);
       this.logoHeight = this.height / 2;
       this.logoWidth = this.logoHeight * aspectRatioLogo;
       this.logoOffsetY = (this.height - this.logoHeight) / 2;
       this.logoOffsetX = (this.width - this.logoWidth) / 4;
 
-      this.titleSize = this.width / 30;
+      this.titleSize = this.width / 25;
       this.offsetXTitle = this.width / 2;
       this.offsetYTitle = this.logoOffsetY / 2;
 
@@ -193,16 +217,17 @@ export class MainMenu extends Component {
   }
 
   removeListeners() {
+    console.log('удалили слушателей меню');
     this.canvas.removeEventListener('click', this.checkClickAnswerThis);
     this.canvas.removeEventListener('mousemove', this.checkMoveAnswerThis);
   }
 
   checkClickAnswer(e) {
     let zoom = this.calcZoom();
-    for (let i = 0; i <= 3; i++) {
-      if (this.checkBorders(e, zoom, i)) {
-        console.log('Variant', i, 'click');
-        this.showResult(i);
+    for (let j = 0; j <= 3; j++) {
+      if (this.checkBorders(e, zoom, j)) {
+        console.log('Variant', j, 'click');
+        this.showResult(j);
       }
     }
   }

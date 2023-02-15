@@ -5,7 +5,7 @@ export class Spa {
   constructor() {
     this.SPAStateH = null; //текущее состояние приложения
     this.main = null;
-    this.tryBack = false;
+    // this.tryBack = false;
     window.addEventListener('hashchange', this.switchToStateFromURLHash);
     self = this;
   }
@@ -62,10 +62,16 @@ export class Spa {
   }
 
   startMainMenu() {
+    if (this.game) {
+      this.game.removeListeners();
+    }
     if (!this.main) {
       this.main = new MainMenu(this);
     }
-    window.removeEventListener('beforeunload', this.warnUser);
+    if (this.game) {
+      window.removeEventListener('beforeunload', this.warnUser);
+      window.removeEventListener('popstate', this.askToBack);
+    }
     this.main.initMenu();
   }
 
@@ -76,9 +82,8 @@ export class Spa {
     if (!this.game) {
       this.game = new Game(this);
       console.log('NEW GAME');
-    }
-    if (this.tryBack !== true) {
-      console.log('опа опа опа');
+      this.game.initGame();
+    } else {
       this.game.initGame();
     }
     window.addEventListener('beforeunload', this.warnUser);
@@ -91,24 +96,31 @@ export class Spa {
   }
 
   warnUser(e) {
-    if (self.game.allowPrompt) {
+    if (!self.game.goBack) {
       e.returnValue = 'You have made changes. They will be lost if you continue.';
       return 'You have made changes. They will be lost if you continue.';
+    } else {
+      e.returnValue = null;
     }
   }
 
   askToBack(e) {
-    let ask = confirm('You have made changes. Do you really want to go back?');
-    console.log(ask);
-    window.removeEventListener('popstate', self.askToBack);
-    if (!ask) {
-      self.tryBack = true;
-      self.switchToGamePage();
-    } else {
-      self.tryBack = false;
-      self.game.removeListeners();
+    if (!self.game.goBack) {
+      let ask = confirm('You have made changes. Do you really want to go back?');
+      if (ask) {
+        self.game.removeListeners();
+        self.game.canvas.removeEventListener('click', self.game.checkContinueCont);
+        window.removeEventListener('popstate', self.askToBack);
+        console.log(555);
+      } else {
+        window.removeEventListener('hashchange', self.switchToStateFromURLHash);
+        window.removeEventListener('popstate', self.askToBack);
+        self.switchToGamePage();
+        setTimeout(() => {
+          window.addEventListener('hashchange', self.switchToStateFromURLHash);
+          window.addEventListener('popstate', self.askToBack);
+        }, 200);
+      }
     }
   }
-
-
 }

@@ -14,7 +14,6 @@ export class Game extends Component {
     this.flagOffsetX = 0;  //координаты верхнего левого угла флага
     this.flagOffsetY = 0;
     this.frameWidth = 20;  //толщина белой рамки вокруг флага
-    this.allowPrompt = true; //запрет покидания страницы
     this.boxWidth = 0; //ширина рамки с вариантом ответа
     this.boxHeight = 0; //высота рамки с вариантом ответа
     this.boxDist = 0;  //расстояние между рамками с ответами
@@ -29,14 +28,16 @@ export class Game extends Component {
     this.live = 0;
     this.answerOptions = []; //массив с вариантами ответов;
     this.activeAnswer = [];   //активный вариант (на который наведена мышь);
+    this.goBack = true; // можно ли уходить со страницы game;
     this.imgGame = {
       human: null,
       button: null
     };
   }
 
+
   initGame() {
-    this.start();
+    this.goBack = true;
     this.live = this.liveDefault;
     this.score = this.scoreDefault;
     window.addEventListener('resize', this.reRunGame.bind(this));
@@ -45,6 +46,7 @@ export class Game extends Component {
       this.renderLoader();
       this.loadImgData();
     });
+    this.start();
   }
 
   preloadStartData(callback) {
@@ -110,7 +112,14 @@ export class Game extends Component {
     switch (this.currentRender[0]) {
       case 0:
         this.initDimensions();
-        this.runGame();
+        this.createGameSizes();
+        this.renderBackground();
+        this.renderFrame();
+        this.renderFlag();
+        this.renderScore();
+        this.renderLive();
+        this.createAnswers();
+        this.renderAnswers();
         break;
       case 1:
         this.initDimensions();
@@ -354,6 +363,7 @@ export class Game extends Component {
   }
 
   showResult(num) {
+    this.goBack = false;
     this.removeListeners();
     let colorFrame;
     if (this.checkAnswer(num)) {
@@ -578,7 +588,7 @@ export class Game extends Component {
     if (this.live > 0) {
       setTimeout(() => {
         this.startNextRound();
-      }, 500);
+      }, 100);
     } else {
       setTimeout(() => {
         this.finishGame();
@@ -592,6 +602,7 @@ export class Game extends Component {
   }
 
   finishGame() {
+    this.goBack = true;
     this.renderBackground();
     this.renderFrame();
     this.renderScore();
