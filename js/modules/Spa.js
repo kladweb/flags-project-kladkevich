@@ -78,6 +78,7 @@ export class Spa {
       console.log('NEW GAME');
     }
     if (this.tryBack !== true) {
+      console.log('опа опа опа');
       this.game.initGame();
     }
     window.addEventListener('beforeunload', this.warnUser);

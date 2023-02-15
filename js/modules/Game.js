@@ -27,8 +27,8 @@ export class Game extends Component {
     this.liveDefault = 2;
     this.score = 0;
     this.live = 0;
-    this.answerOptions = [];
-    this.activeAnswer = [];
+    this.answerOptions = []; //массив с вариантами ответов;
+    this.activeAnswer = [];   //активный вариант (на который наведена мышь);
     this.imgGame = {
       human: null,
       button: null
@@ -55,6 +55,7 @@ export class Game extends Component {
 
   loadImgData() {
     this.preloadImgFiles(() => {
+      console.log('отсюда: loadImgData');
       this.startGame();
     });
   }
@@ -86,6 +87,7 @@ export class Game extends Component {
   }
 
   startGame() {
+    console.log('startGame');
     this.currentRender = [0, 0, 0];
     this.getRandomFlag();
     this.getRandomAnswers();
@@ -122,7 +124,7 @@ export class Game extends Component {
         this.renderAnswers();
         this.renderArrowWrong(this.currentRender[1]);
         this.reRenderResultColor(this.currentRender[1], this.currentRender[2]);
-        this.continueGame();
+        this.renderMessageContinue();
         break;
       case 2:
         this.initDimensions();
@@ -228,7 +230,7 @@ export class Game extends Component {
 
   getRandomAnswers() {
     this.activeAnswer[0] = 0;
-    this.answerOptions[0] = (this.activeFlag);
+    this.answerOptions[0] = this.activeFlag;
     //из строки выше у нас есть массив с одним правильным ответом. Дополним этот массив другими рандомными
     // вариантами ответов:
     for (let i = 1; i < this.levelGame; i++) {
@@ -293,6 +295,7 @@ export class Game extends Component {
   }
 
   addListeners() {
+    console.log('добавили слушатели');
     this.checkClickAnswerCont = this.checkClickAnswer.bind(this);
     this.checkMoveAnswerCont = this.checkMoveAnswer.bind(this);
     this.canvas.addEventListener('click', this.checkClickAnswerCont);
@@ -300,16 +303,17 @@ export class Game extends Component {
   }
 
   removeListeners() {
+    console.log('удалили слушатели');
     this.canvas.removeEventListener('click', this.checkClickAnswerCont);
     this.canvas.removeEventListener('mousemove', this.checkMoveAnswerCont);
   }
 
   checkClickAnswer(e) {
     let zoom = this.calcZoom();
-    for (let i = 0; i < this.levelGame; i++) {
-      if (this.checkBorders(e, zoom, i)) {
-        console.log('Variant', i, 'click');
-        this.showResult(i);
+    for (let j = 0; j < this.levelGame; j++) {
+      if (this.checkBorders(e, zoom, j)) {
+        console.log('Variant', j, 'click');
+        this.showResult(j);
       }
     }
   }
@@ -557,6 +561,7 @@ export class Game extends Component {
   }
 
   renderMessageContinue() {
+    console.log('renderMessageContinue');
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'center';
       const infoSize = this.flagWidth / 17;
@@ -571,7 +576,9 @@ export class Game extends Component {
   checkContinue() {
     this.canvas.removeEventListener('click', this.checkContinueCont);
     if (this.live > 0) {
-      this.startNextRound();
+      setTimeout(() => {
+        this.startNextRound();
+      }, 500);
     } else {
       setTimeout(() => {
         this.finishGame();
@@ -580,6 +587,7 @@ export class Game extends Component {
   }
 
   startNextRound() {
+    console.log('отсюда: startNextRound');
     this.startGame();
   }
 
