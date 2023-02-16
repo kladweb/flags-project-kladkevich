@@ -5,7 +5,6 @@ export class MainMenu extends Component {
   constructor(spa) {
     super();
     this.spa = spa;
-    // this.game = null;
     this.logoWidth = 300; //предварительные размеры логотипа
     this.logoHeight = 200;
     this.butWidth = 0; //размеры кнопок главного меню
@@ -21,7 +20,8 @@ export class MainMenu extends Component {
 
   initMenu() {
     this.start();
-    window.addEventListener('resize', this.reRunMenu.bind(this));
+    this.reRunMenuCont = this.reRunMenu.bind(this);
+    window.addEventListener('resize', this.reRunMenuCont);
     this.preloadStartData(() => {
       this.loadMenuData();
     });
@@ -279,6 +279,9 @@ export class MainMenu extends Component {
       //   this.game = new Game;
       //   this.game.startGame();
       // }
+    }
+    if (num === 3) {
+      this.spa.switchAboutPage();
     }
   }
 }

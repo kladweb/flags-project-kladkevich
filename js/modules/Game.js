@@ -2,8 +2,9 @@ import {Component} from './Component.js';
 import {flagsAll} from './flagsAll.js';
 
 export class Game extends Component {
-  constructor() {
+  constructor(spa) {
     super();
+    this.spa = spa;
     this.flagsAll = flagsAll;  //объект, содержащий все флаги
     this.unsolvedFlags = flagsAll;  //объект, содержащий неразгаданные флаги
     this.imgFlags = []; //загруженные флаги
@@ -29,6 +30,7 @@ export class Game extends Component {
     this.answerOptions = []; //массив с вариантами ответов;
     this.activeAnswer = [];   //активный вариант (на который наведена мышь);
     this.goBack = true; // можно ли уходить со страницы game;
+    this.activeButton = [0, 0]  //для обработки наведения на кнопки меню после окончания игры
     this.imgGame = {
       human: null,
       button: null
@@ -40,7 +42,8 @@ export class Game extends Component {
     this.goBack = true;
     this.live = this.liveDefault;
     this.score = this.scoreDefault;
-    window.addEventListener('resize', this.reRunGame.bind(this));
+    this.reRunGameCont = this.reRunGame.bind(this);
+    window.addEventListener('resize', this.reRunGameCont);
     this.preloadStartData(() => {
       this.renderBackground();
       this.renderLoader();
@@ -608,7 +611,8 @@ export class Game extends Component {
     this.renderScore();
     this.renderLive();
     this.renderGameOver();
-    this.renderFinishButtons();
+    this.renderFinButtons();
+    this.addFinishListeners();
   }
 
   renderGameOver() {
@@ -625,41 +629,107 @@ export class Game extends Component {
     this.currentRender = [3, 3, 3];
   }
 
-  renderFinishButtons() {
-    const menuWidth = (this.flagWidth - this.boxDist) / 2;
+  renderFinButtons() {
+    this.finButWidth = (this.flagWidth - this.boxDist) / 2;
     let aspectRatioMenu = this.imgGame.button.width / this.imgGame.button.height;
-    let menuHeight = menuWidth / aspectRatioMenu;
-    let currentX = [];
-    let currentY = this.boxOffsetY[0];
-    currentX[0] = this.boxOffsetX[0];
-    currentX[1] = currentX[0] + menuWidth + this.boxDist + this.frameWidth;
+    this.finButHeight = this.finButWidth / aspectRatioMenu;
+    this.finButX = [];
+    this.finButY = this.boxOffsetY[0];
+    this.finButX[0] = this.boxOffsetX[0];
+    this.finButX[1] = this.finButX[0] + this.finButWidth + this.boxDist + this.frameWidth;
     this.ctx.globalAlpha = 0.75;
     for (let i = 0; i < 2; i++) {
       window.requestAnimationFrame(() => {
-        this.renderFinishButton(this.imgGame.button, currentX[i], currentY, menuWidth, menuHeight);
+        this.renderFinButton(this.imgGame.button, this.finButX[i], this.finButY, this.finButWidth, this.finButHeight);
       });
     }
-    const textButton = ['PLAY NEW GAME', 'RETURN TO MENU'];
+    this.textButton = ['PLAY NEW GAME', 'RETURN TO MENU'];
     this.ctx.globalAlpha = 1;
     for (let i = 0; i < 2; i++) {
-      let currentTextX = currentX[i] + menuWidth / 2;
-      let currentTextY = currentY + menuHeight / 1.8;
-      const textSize = menuHeight / 3;
+      let currentTextX = this.finButX[i] + this.finButWidth / 2;
+      let currentTextY = this.finButY + this.finButHeight / 1.8;
+      const textSize = this.finButHeight / 3;
       window.requestAnimationFrame(() => {
         this.ctx.font = `${textSize}px Arial`;
         this.ctx.fillStyle = this.colors.gallery;
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
-        this.renderButtonText(textButton[i], currentTextX, currentTextY);
+        this.renderButtonText(this.textButton[i], currentTextX, currentTextY);
       });
     }
   }
 
-  renderFinishButton(image, offsetX, offsetY, width, height) {
+  renderFinButton(image, offsetX, offsetY, width, height) {
     this.ctx.drawImage(image, offsetX, offsetY, width, height);
   }
 
   renderButtonText(text, currentX, currentY) {
     this.ctx.fillText(text, currentX, currentY);
+  }
+
+  addFinishListeners() {
+    this.checkClickFinishCont = this.checkClickFinish.bind(this);
+    this.checkMoveFinishCont = this.checkMoveFinish.bind(this);
+    this.canvas.addEventListener('click', this.checkClickFinishCont);
+    this.canvas.addEventListener('mousemove', this.checkMoveFinishCont);
+  }
+
+  removeFinishListeners() {
+    this.canvas.removeEventListener('click', this.checkClickFinishCont);
+    this.canvas.removeEventListener('mousemove', this.checkMoveFinishCont);
+  }
+
+  checkClickFinish(e) {
+    let zoom = this.calcZoom();
+    for (let j = 0; j <= 3; j++) {
+      if (this.checkBordersFinish(e, zoom, j)) {
+        this.resultFinish(j);
+      }
+    }
+  }
+
+  checkMoveFinish(e) {
+    let zoom = this.calcZoom();
+    for (let i = 0; i <= 1; i++) {
+      if (this.checkBorders(e, zoom, i)) {
+        if (this.activeButton[i] !== 1) {
+          e.target.style.cursor = 'url(../img/cursors/earth-pointer.png), pointer';
+          this.ctx.globalAlpha = 1;
+          this.renderFinButton(this.imgGame.button, this.finButX[i], this.finButY, this.finButWidth, this.finButHeight);
+          let currentTextX = this.finButX[i] + this.finButWidth / 2;
+          let currentTextY = this.finButY + this.finButHeight / 1.8;
+          this.renderButtonText(`${this.textButton[i]}`, currentTextX, currentTextY);
+          this.activeButton[i] = 1;
+        }
+      } else {
+        if (this.activeButton[i] === 1) {
+          e.target.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
+          this.renderBackground();
+          this.renderFrame();
+          this.renderScore();
+          this.renderLive();
+          this.renderGameOver();
+          this.renderFinButtons();
+          this.activeButton[i] = 0;
+        }
+      }
+    }
+  }
+
+  checkBordersFinish(e, k, number) {
+    let borderLeft = e.pageX * k > this.finButX[number];
+    let borderRight = e.pageX * k < this.finButX[number] + this.finButWidth;
+    let borderTop = e.pageY * k > this.finButY;
+    let borderBottom = e.pageY * k < this.finButY + this.finButHeight;
+    return borderLeft && borderRight && borderTop && borderBottom;
+  }
+
+  resultFinish(num) {
+    this.removeFinishListeners();
+    if (num === 0) {
+      this.initGame();
+    } else {
+      this.spa.switchToMainPage();
+    }
   }
 }

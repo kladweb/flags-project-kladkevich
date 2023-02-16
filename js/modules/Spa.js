@@ -1,5 +1,6 @@
 import {MainMenu} from './MainMenu.js';
 import {Game} from './Game.js';
+import {About} from './About.js';
 
 export class Spa {
   constructor() {
@@ -32,6 +33,7 @@ export class Spa {
         console.log('Settings');
         break;
       case 'about':
+        self.startAboutPage();
         console.log('About');
         break;
     }
@@ -64,6 +66,11 @@ export class Spa {
   startMainMenu() {
     if (this.game) {
       this.game.removeListeners();
+      window.removeEventListener('resize', this.game.reRunGameCont);
+    }
+    if (this.about) {
+      this.about.canvas.removeEventListener('click', this.about.checkBackCont);
+      window.addEventListener('resize', this.about.reRunAboutCont);
     }
     if (!this.main) {
       this.main = new MainMenu(this);
@@ -122,5 +129,19 @@ export class Spa {
         }, 200);
       }
     }
+  }
+
+  startAboutPage() {
+    if (this.game) {
+      this.game.removeListeners();
+    }
+    if (this.main) {
+      this.main.removeListeners();
+      window.removeEventListener('resize', this.main.reRunMenuCont);
+    }
+    if (!this.about) {
+      this.about = new About(this);
+    }
+    this.about.initAbout();
   }
 }
