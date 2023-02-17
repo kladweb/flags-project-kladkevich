@@ -8,10 +8,10 @@ export class About extends Component {
     this.textAbout[0] = 'RULES OF THE GAME';
     this.textAbout[1] = 'Guess as many country flags as possible. Perhaps you will become the best quiz player! ' +
       'There is no time limit for guessing the flag! I wish you good luck!';
-    this.textAbout[2] = 'ABOUT THE GAME';
+    this.textAbout[2] = 'ABOUT THE PROJECT';
     this.textAbout[3] = 'This game was created as a part of the final project of the course \"Development of Web' +
-      ' Applications in JavaScript\" with the use of canvas graphics. This project was developed by Pavel Kladkevich' +
-      ' under the guidance of the teacher Stashkevich Aliaksandr.'
+      ' Applications in JavaScript\" with using canvas graphics. This project was developed by Pavel Kladkevich' +
+      ' under the guidance of the teacher Aliaksandr Stashkevich.'
     this.textAbout[4] = '\"To travel is to live\" - Hans Christian Andersen';
     this.textAbout[5] = 'TAP or CLICK to return...';
   }
@@ -26,8 +26,8 @@ export class About extends Component {
   }
 
   reRunAbout() {
-    this.renderBackground();
     this.initDimensions();
+    this.renderBackground();
     this.renderAbout();
     this.renderQuote();
     this.renderMessageBack();
@@ -44,6 +44,7 @@ export class About extends Component {
     this.setCursor();
     this.renderAbout();
     this.renderQuote();
+    console.log('СЛУШАТЕЛЬ !!!');
     this.addListenerForBack();
   }
 
@@ -145,6 +146,7 @@ export class About extends Component {
 
   renderAboutText(text, currentX, currentY, aboutSize, color) {
     window.requestAnimationFrame(() => {
+      this.ctx.textAlign = 'left';
       this.ctx.font = `${aboutSize}px Arial`;
       this.ctx.fillStyle = color;
       this.ctx.fillText(text, currentX, currentY);
@@ -172,5 +174,4 @@ export class About extends Component {
       this.spa.switchToMainPage();
     }, 100);
   }
-
 }

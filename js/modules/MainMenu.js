@@ -78,7 +78,7 @@ export class MainMenu extends Component {
     const promise = new Promise(res => res());
     promise.then(() => {
       this.renderBackground();
-      console.log('рендер промис');
+      // console.log('рендер промис');
     })
     .then(() => {
       this.renderLogo();
@@ -141,7 +141,7 @@ export class MainMenu extends Component {
     }
 
     if (aspectRatioWindow > 1.5) {
-      console.log('---', aspectRatioWindow);
+      // console.log('---', aspectRatioWindow);
       this.logoHeight = this.height / 2;
       this.logoWidth = this.logoHeight * aspectRatioLogo;
       this.logoOffsetY = (this.height - this.logoHeight) / 2;
@@ -207,9 +207,6 @@ export class MainMenu extends Component {
   }
 
   addListeners() {
-    this.canvas.addEventListener('contextmenu', (e) => {
-      e.preventDefault();
-    });
     this.checkClickAnswerThis = this.checkClickAnswer.bind(this);
     this.checkMoveAnswerThis = this.checkMoveAnswer.bind(this);
     this.canvas.addEventListener('click', this.checkClickAnswerThis);
@@ -270,15 +267,15 @@ export class MainMenu extends Component {
   }
 
   showResult(num) {
-    this.removeListeners();
+    // this.removeListeners();
     if (num === 0) {
       this.spa.switchToGamePage();
-
-      // this.renderBackground();
-      // if (!this.game) {
-      //   this.game = new Game;
-      //   this.game.startGame();
-      // }
+    }
+    if (num === 1) {
+      this.spa.switchToHiScorePage();
+    }
+    if (num === 2) {
+      this.spa.switchSettingsPage();
     }
     if (num === 3) {
       this.spa.switchAboutPage();

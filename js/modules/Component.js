@@ -33,6 +33,9 @@ export class Component {
   init() {
     this.canvas = document.getElementById('cva');
     this.ctx = this.canvas.getContext('2d');
+    this.canvas.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+    });
     this.initDimensions();
   }
 
@@ -98,7 +101,7 @@ export class Component {
       this.ctx.textBaseline = 'middle';
       this.ctx.font = `${loadSize}px Arial`;
       this.ctx.fillStyle = this.colors.osloGray;
-      this.ctx.fillText(`LOAD GAME...`, offsetXLoader, offsetYLoader);
+      this.ctx.fillText(`LOAD...`, offsetXLoader, offsetYLoader);
     })
   }
 }

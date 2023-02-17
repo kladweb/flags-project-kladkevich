@@ -6,7 +6,7 @@ export class Game extends Component {
     super();
     this.spa = spa;
     this.flagsAll = flagsAll;  //объект, содержащий все флаги
-    this.unsolvedFlags = flagsAll;  //объект, содержащий неразгаданные флаги
+    this.unsolvedFlags = {};  //объект, содержащий неразгаданные флаги
     this.imgFlags = []; //загруженные флаги
     this.activeFlag = null; //рандомный флаг (рандомный ключ объекта imagesFlags)
     this.activeImgFlag = null; //img для отрисовки текущего флага
@@ -23,10 +23,9 @@ export class Game extends Component {
     this.boxOffsetY = [];
     this.levelGame = 4;
     this.currentRender = [0, 0, 0];  //текущее состояние для resize
-    this.scoreDefault = 0;
-    this.liveDefault = 2;
-    this.score = 0;
-    this.live = 0;
+    this.liveDefault = 7; //начальное количество жизней
+    this.score = 0; //текущее количество баллов
+    this.live = 0;  //текущее (оставшееся) количество жизней
     this.answerOptions = []; //массив с вариантами ответов;
     this.activeAnswer = [];   //активный вариант (на который наведена мышь);
     this.goBack = true; // можно ли уходить со страницы game;
@@ -41,15 +40,19 @@ export class Game extends Component {
   initGame() {
     this.goBack = true;
     this.live = this.liveDefault;
-    this.score = this.scoreDefault;
+    Object.assign(this.unsolvedFlags, this.flagsAll);
     this.reRunGameCont = this.reRunGame.bind(this);
     window.addEventListener('resize', this.reRunGameCont);
     this.preloadStartData(() => {
-      this.renderBackground();
-      this.renderLoader();
-      this.loadImgData();
+      this.startFirstGame();
     });
     this.start();
+  }
+
+  startFirstGame() {
+    this.renderBackground();
+    this.renderLoader();
+    this.loadImgData();
   }
 
   preloadStartData(callback) {
@@ -94,6 +97,7 @@ export class Game extends Component {
   startGame() {
     console.log('startGame');
     this.currentRender = [0, 0, 0];
+    this.setCursor();
     this.getRandomFlag();
     this.getRandomAnswers();
     this.runGame();
@@ -157,7 +161,12 @@ export class Game extends Component {
         this.initDimensions();
         this.createGameSizes();
         this.createAnswers();
-        this.finishGame();
+        this.renderBackground();
+        this.renderFrame();
+        this.renderScore();
+        this.renderLive();
+        this.renderGameOver();
+        this.renderFinButtons();
     }
   }
 
@@ -243,11 +252,17 @@ export class Game extends Component {
   getRandomAnswers() {
     this.activeAnswer[0] = 0;
     this.answerOptions[0] = this.activeFlag;
+    let randomVariants; //берем из оставшихся флагов, но в конце игры, когда флагов меньше, чем 4, берем из всех флагов
     //из строки выше у нас есть массив с одним правильным ответом. Дополним этот массив другими рандомными
     // вариантами ответов:
     for (let i = 1; i < this.levelGame; i++) {
-      let randomNumberFlag = Math.floor(Math.random() * (Object.keys(this.flagsAll).length));
-      let randomAnswer = Object.keys(this.flagsAll)[randomNumberFlag];
+      let remainsFlags = Object.keys(this.unsolvedFlags).length;
+      console.log(remainsFlags);
+      randomVariants = (remainsFlags > this.levelGame) ? this.unsolvedFlags : this.flagsAll;
+      console.log('randomVariants -', Object.keys(randomVariants).length);
+      console.log('randomVariants -', Object.keys(this.flagsAll).length);
+      let randomNumberFlag = Math.floor(Math.random() * (Object.keys(randomVariants).length));
+      let randomAnswer = Object.keys(randomVariants)[randomNumberFlag];
       if (this.answerOptions.indexOf(randomAnswer) === -1) {
         this.answerOptions[i] = (randomAnswer);
         this.activeAnswer.push(0);
@@ -307,7 +322,7 @@ export class Game extends Component {
   }
 
   addListeners() {
-    console.log('добавили слушатели');
+    // console.log('добавили слушатели');
     this.checkClickAnswerCont = this.checkClickAnswer.bind(this);
     this.checkMoveAnswerCont = this.checkMoveAnswer.bind(this);
     this.canvas.addEventListener('click', this.checkClickAnswerCont);
@@ -315,7 +330,7 @@ export class Game extends Component {
   }
 
   removeListeners() {
-    console.log('удалили слушатели');
+    // console.log('удалили слушатели');
     this.canvas.removeEventListener('click', this.checkClickAnswerCont);
     this.canvas.removeEventListener('mousemove', this.checkMoveAnswerCont);
   }
@@ -337,14 +352,14 @@ export class Game extends Component {
         if (this.activeAnswer[i] !== 1) {
           e.target.style.cursor = 'url(../img/cursors/earth-pointer.png), pointer';
           this.renderAnswer(i, this.colors.osloGrayL, this.colors.spicyMixL, this.colors.white);
-          console.log('Variant ', i, ' change');
+          // console.log('Variant ', i, ' change');
           this.activeAnswer[i] = 1;
         }
       } else {
         if (this.activeAnswer[i] === 1) {
           e.target.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
           this.renderAnswer(i, this.colors.osloGray, this.colors.spicyMix, this.colors.gallery);
-          console.log('Variant ', i, ' return');
+          // console.log('Variant ', i, ' return');
           this.activeAnswer[i] = 0;
         }
       }
@@ -568,13 +583,19 @@ export class Game extends Component {
   }
 
   continueGame() {
+    delete this.unsolvedFlags[this.activeFlag];
+    if (Object.keys(this.unsolvedFlags).length <= 0) {
+      this.finishText = 'You are winner!';
+      this.finishGame();
+      return;
+    }
     this.renderMessageContinue();
     this.checkContinueCont = this.checkContinue.bind(this);
     this.canvas.addEventListener('click', this.checkContinueCont);
   }
 
   renderMessageContinue() {
-    console.log('renderMessageContinue');
+    // console.log('renderMessageContinue');
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'center';
       const infoSize = this.flagWidth / 17;
@@ -594,6 +615,7 @@ export class Game extends Component {
       }, 100);
     } else {
       setTimeout(() => {
+        this.finishText = 'GAME OVER'
         this.finishGame();
       }, 500);
     }
@@ -606,6 +628,7 @@ export class Game extends Component {
 
   finishGame() {
     this.goBack = true;
+    this.spa.checkResult();
     this.renderBackground();
     this.renderFrame();
     this.renderScore();
@@ -624,7 +647,7 @@ export class Game extends Component {
       this.ctx.fillStyle = this.colors.shiraz;
       let currentTextX = this.flagOffsetX + this.flagWidth / 2;
       let currentTextY = this.flagOffsetY + this.flagHeight / 2;
-      this.ctx.fillText(`GAME OVER`, currentTextX, currentTextY);
+      this.ctx.fillText(this.finishText, currentTextX, currentTextY);
     });
     this.currentRender = [3, 3, 3];
   }
