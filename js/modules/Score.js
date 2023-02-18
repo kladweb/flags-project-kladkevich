@@ -136,7 +136,7 @@ export class Score extends Component {
       // return;
     }
     this.renderFrameScore();
-    this.ctx.font = `${this.textScSize * 1.5}px Arial`;
+    this.ctx.font = `${this.textScSize * 1.5}px ${this.font}`;
     let testWidth = this.ctx.measureText(this.textScore[0]).width;
     let currentX = (this.width - testWidth) / 2;
     let currentY = this.frCurrY + this.textScSize * 3;
@@ -148,7 +148,7 @@ export class Score extends Component {
   renderScText(text, currentX, currentY, textSize, color, Align) {
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = Align;
-      this.ctx.font = `${textSize}px Arial`;
+      this.ctx.font = `${textSize}px ${this.font}`;
       this.ctx.fillStyle = color;
       this.ctx.globalAlpha = 1;
       this.ctx.fillText(text, currentX, currentY);
@@ -205,7 +205,7 @@ export class Score extends Component {
 
   renderMessageBack() {
     this.ctx.fillStyle = this.colors.osloGray;
-    this.ctx.font = `${this.aboutSize * 1.5}px Arial`;
+    this.ctx.font = `${this.aboutSize * 1.5}px ${this.font}`;
     let currentTextX = this.width / 2;
     let currentTextY = this.height - this.textScSize * 2;
     const textBack = 'TAP or CLICK to return...';

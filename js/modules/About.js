@@ -75,7 +75,7 @@ export class About extends Component {
     let marginTop = this.aboutSize * 2;
     let lineHeight = this.aboutSize * 1.5;
 
-    this.ctx.font = `${this.aboutSize * 1.5}px Arial`;
+    this.ctx.font = `${this.aboutSize * 1.5}px ${this.font}`;
     let testWidth = this.ctx.measureText(this.textAbout[0]).width;
     let headOffsetX = (this.width - testWidth) / 2;
     this.renderAboutText(this.textAbout[0], headOffsetX, marginTop, this.aboutSize * 1.5, this.colors.gallery);
@@ -86,7 +86,7 @@ export class About extends Component {
     let line = '';
     for (let n = 0; n < countWords; n++) {
       let testLine = line + words[n] + ' ';
-      this.ctx.font = `${this.aboutSize}px Arial`;
+      this.ctx.font = `${this.aboutSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.gallery;
       testWidth = this.ctx.measureText(testLine).width;
       if (testWidth > this.widthAbout) {
@@ -100,7 +100,7 @@ export class About extends Component {
     this.renderAboutText(line, marginLeft, marginTop, this.aboutSize);
     marginTop += this.aboutSize * 5;
 
-    this.ctx.font = `${this.aboutSize * 1.5}px Arial`;
+    this.ctx.font = `${this.aboutSize * 1.5}px ${this.font}`;
     testWidth = this.ctx.measureText(this.textAbout[2]).width;
     headOffsetX = (this.width - testWidth) / 2;
     this.renderAboutText(this.textAbout[2], headOffsetX, marginTop, this.aboutSize * 1.5);
@@ -111,7 +111,7 @@ export class About extends Component {
     line = '';
     for (let n = 0; n < countWords; n++) {
       let testLine = line + words[n] + ' ';
-      this.ctx.font = `${this.aboutSize}px Arial`;
+      this.ctx.font = `${this.aboutSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.gallery;
       testWidth = this.ctx.measureText(testLine).width;
       if (testWidth > this.widthAbout) {
@@ -127,7 +127,7 @@ export class About extends Component {
   }
 
   renderQuote() {
-    this.ctx.font = `${this.aboutSize}px Arial`;
+    this.ctx.font = `${this.aboutSize}px ${this.font}`;
     this.ctx.fillStyle = this.colors.gallery;
     let marginLeft = this.width - this.ctx.measureText(this.textAbout[4]).width - this.aboutSize;
     let marginTop = this.height - this.getFontHeight(this.ctx.font);
@@ -147,7 +147,7 @@ export class About extends Component {
   renderAboutText(text, currentX, currentY, aboutSize, color) {
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'left';
-      this.ctx.font = `${aboutSize}px Arial`;
+      this.ctx.font = `${aboutSize}px ${this.font}`;
       this.ctx.fillStyle = color;
       this.ctx.fillText(text, currentX, currentY);
     });
@@ -161,7 +161,7 @@ export class About extends Component {
 
   renderMessageBack() {
     this.ctx.fillStyle = this.colors.osloGray;
-    this.ctx.font = `${this.aboutSize * 1.5}px Arial`;
+    this.ctx.font = `${this.aboutSize * 1.5}px ${this.font}`;
     let testWidth = this.ctx.measureText(this.textAbout[5]).width;
     let currentTextX = (this.width - testWidth) / 2;
     let currentTextY = this.marginTop + this.aboutSize;

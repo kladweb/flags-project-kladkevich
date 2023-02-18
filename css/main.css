@@ -1,3 +1,8 @@
+@font-face {
+  font-family: 'Jemima-Bold';
+  src: url('../fonts/Jemima-Bold.ttf');
+}
+
 * {
   margin: 0;
   padding: 0;

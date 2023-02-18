@@ -3,6 +3,7 @@ export class Component {
     this.width = 0;
     this.height = 0;
     this.imageBackground = null;
+    this.font = 'Jemima-Bold';
     this.colors = {
       logCabin: '#1e2418',
       shiraz: '#b1091d',

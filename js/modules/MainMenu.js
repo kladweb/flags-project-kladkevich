@@ -169,7 +169,7 @@ export class MainMenu extends Component {
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
-      this.ctx.font = `${this.titleSize}px Arial`;
+      this.ctx.font = `${this.titleSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.green;
       this.ctx.fillText(`GUESS THE COUNTRY`, this.offsetXTitle, this.offsetYTitle);
     });
@@ -189,7 +189,7 @@ export class MainMenu extends Component {
       }
       this.ctx.globalAlpha = 1;
       const textSize = this.butHeight / 2.5;
-      this.ctx.font = `${textSize}px Arial`;
+      this.ctx.font = `${textSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.gallery;
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';

@@ -143,7 +143,7 @@ export class SettingsPage extends Component {
     }
     this.X2 = this.width - this.X1 - this.textSetSize * 1.5;
     this.checkSize = this.textSetSize * 2;
-    this.ctx.font = `${this.textSetSize * 1.5}px Arial`;
+    this.ctx.font = `${this.textSetSize * 1.5}px ${this.font}`;
     let currentX = this.width / 2;
     let currentY = this.Y1;
     let Al = 'center';
@@ -167,7 +167,7 @@ export class SettingsPage extends Component {
     window.requestAnimationFrame(() => {
       this.ctx.textBaseline = 'middle';
       this.ctx.textAlign = Align;
-      this.ctx.font = `${textSize}px Arial`;
+      this.ctx.font = `${textSize}px ${this.font}`;
       this.ctx.fillStyle = color;
       this.ctx.globalAlpha = 1;
       this.ctx.fillText(text, currentX, currentY);

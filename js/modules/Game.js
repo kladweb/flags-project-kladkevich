@@ -40,6 +40,7 @@ export class Game extends Component {
   initGame() {
     this.goBack = true;
     this.live = this.liveDefault;
+    this.score = 0;
     Object.assign(this.unsolvedFlags, this.flagsAll);
     this.reRunGameCont = this.reRunGame.bind(this);
     window.addEventListener('resize', this.reRunGameCont);
@@ -224,7 +225,7 @@ export class Game extends Component {
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'left';
       const scoreSize = this.flagWidth / 20;
-      this.ctx.font = `${scoreSize}px Arial`;
+      this.ctx.font = `${scoreSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.gallery;
       let currentTextX = this.flagOffsetX;
       let currentTextY = this.flagOffsetY - this.frameWidth / 2 - scoreSize;
@@ -238,7 +239,7 @@ export class Game extends Component {
       this.ctx.globalAlpha = 1;
       this.ctx.textAlign = 'left';
       const liveSize = this.flagWidth / 20;
-      this.ctx.font = `${liveSize}px Arial`;
+      this.ctx.font = `${liveSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.gallery;
       let currentTextX = this.flagOffsetX + this.flagWidth - liveSize * String(this.live).length / 2;
       let currentTextY = this.flagOffsetY - this.frameWidth / 2 - liveSize;
@@ -314,8 +315,8 @@ export class Game extends Component {
     window.requestAnimationFrame(() => {
       this.ctx.fillStyle = colorText;
       this.ctx.textAlign = 'center';
-      const answerSize = this.boxWidth / 15;
-      this.ctx.font = `${answerSize}px Arial`;
+      const answerSize = this.boxWidth / 14;
+      this.ctx.font = `${answerSize}px ${this.font}`;
       let currentTextX = this.boxOffsetX[num] + this.boxWidth / 2;
       let currentTextY = this.boxOffsetY[num] + this.boxHeight / 2;
       this.ctx.fillText(this.flagsAll[this.answerOptions[num]], currentTextX, currentTextY);
@@ -601,7 +602,7 @@ export class Game extends Component {
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'center';
       const infoSize = this.flagWidth / 17;
-      this.ctx.font = `${infoSize}px Arial`;
+      this.ctx.font = `${infoSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.osloGray;
       let currentTextX = this.flagOffsetX + this.flagWidth / 2;
       let currentTextY = this.boxOffsetY[this.boxOffsetY.length - 1] + this.boxHeight + infoSize;
@@ -645,7 +646,7 @@ export class Game extends Component {
       this.ctx.globalAlpha = 1;
       this.ctx.textAlign = 'center';
       const infoSize = this.flagWidth / 7;
-      this.ctx.font = `${infoSize}px Arial`;
+      this.ctx.font = `${infoSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.shiraz;
       let currentTextX = this.flagOffsetX + this.flagWidth / 2;
       let currentTextY = this.flagOffsetY + this.flagHeight / 2;
@@ -675,7 +676,7 @@ export class Game extends Component {
       let currentTextY = this.finButY + this.finButHeight / 1.8;
       const textSize = this.finButHeight / 3;
       window.requestAnimationFrame(() => {
-        this.ctx.font = `${textSize}px Arial`;
+        this.ctx.font = `${textSize}px ${this.font}`;
         this.ctx.fillStyle = this.colors.gallery;
         this.ctx.textAlign = 'center';
         this.ctx.textBaseline = 'middle';
