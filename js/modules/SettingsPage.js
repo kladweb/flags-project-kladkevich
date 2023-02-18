@@ -9,12 +9,13 @@ export class SettingsPage extends Component {
       checked: null,
       unchecked: null
     };
-    this.music = 1; //музыка включена
-    this.sounds = 1; //звуки включены
-    this.settings = [this.music, this.sounds];
+    this.settings = [1, 1];
+    // this.settings[0] = 1; //музыка включена
+    // this.settings[1] = 1; //звуки включены
   }
 
   initPageSet() {
+    this.spa.playMelody();
     this.start();
     this.setCursor();
     this.preloadSetPageData(() => {
@@ -26,13 +27,14 @@ export class SettingsPage extends Component {
     this.imageBackground = new Image();
     this.imageBackground.src = `img/shared/background.png`;
     this.imageBackground.addEventListener('load', callback);
-    this.addListeners();
   }
 
   loadSet() {
     this.renderBackground();
     // this.renderSetPage();
     this.loadCheckedImg();
+    this.addListeners();
+    console.log(' НУЖНЫЦ СЛУШАТЕЛЬ !!! ЕСТЬ');
   }
 
   loadCheckedImg() {
@@ -68,6 +70,7 @@ export class SettingsPage extends Component {
   }
 
   addListeners() {
+    console.log('нузный ЗИС', this);
     this.checkClickCheckThis = this.checkClickCheck.bind(this);
     this.canvas.addEventListener('click', this.checkClickCheckThis);
   }
@@ -77,10 +80,11 @@ export class SettingsPage extends Component {
   }
 
   checkClickCheck(e) {
+    console.log('НУЖНЫЙ КЛИК', e);
     let zoom = this.calcZoom();
     for (let j = 0; j <= 1; j++) {
       if (this.checkBorders(e, zoom, j)) {
-        console.log('Variant', j, 'click');
+        // console.log('Variant', j, 'click');
         this.showResult(j);
       }
     }
@@ -101,14 +105,22 @@ export class SettingsPage extends Component {
   }
 
   showResult(num) {
+    // if (num === 0) {
+    //   this.spa.playMelody();
+    // }
     this.settings[num] = (this.settings[num] === 1) ? 0 : 1;
-    console.log(this.settings[num]);
-    this.loadSet();
+    if (this.settings[1] === 1) {
+      this.spa.playClick();
+    }
+    this.spa.saveSettings();
+    // console.log(this.settings[num]);
+    this.renderBackground();
+    this.renderSetPage();
   }
 
   renderSetPage() {
     let aspectRatioWindow = window.innerWidth / window.innerHeight;
-    console.log(aspectRatioWindow);
+    // console.log(aspectRatioWindow);
     if (aspectRatioWindow <= 0.5) {
       this.textSetSize = this.width / 25;
       this.X1 = this.width / 4.5;

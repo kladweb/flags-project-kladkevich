@@ -66,6 +66,9 @@ export class MainMenu extends Component {
     this.createMenuSizes();
     this.addListeners();
     this.renderMenu();
+    // if (this.spa.audioF.melody.paused) {
+    //   this.spa.audioF.melody.play();
+    // }
   }
 
   reRunMenu() {
@@ -267,6 +270,7 @@ export class MainMenu extends Component {
   }
 
   showResult(num) {
+    this.spa.playClick();
     // this.removeListeners();
     if (num === 0) {
       this.spa.switchToGamePage();

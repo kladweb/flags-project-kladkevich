@@ -169,6 +169,7 @@ export class About extends Component {
   }
 
   checkBack() {
+    this.spa.playClick();
     this.canvas.removeEventListener('click', this.checkBackCont);
     setTimeout(() => {
       this.spa.switchToMainPage();

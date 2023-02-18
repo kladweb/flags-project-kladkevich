@@ -89,10 +89,7 @@ export class Score extends Component {
       'http://fe.it-academy.by/AjaxStringStorage2.php',
       fd
     );
-
-    console.log('result', result);
   }
-
 
   preloadStartImage(callback) {
     this.imageBackground = new Image();
@@ -217,6 +214,7 @@ export class Score extends Component {
   }
 
   checkScoreBack() {
+    this.spa.playClick();
     this.canvas.removeEventListener('click', this.checkScoreBackCont);
     setTimeout(() => {
       this.spa.switchToMainPage();

@@ -8,6 +8,19 @@ export class Spa {
   constructor() {
     this.SPAStateH = null; //текущее состояние приложения
     this.main = null;
+    this.audioF = {
+      melody: null,
+      good: null,
+      wrong: null,
+      click: null
+    }
+    this.storageName = 'settFlagGame';
+    // this.settings = {
+    //   'music': 1,
+    //   'sounds': 1
+    // };
+    // this.settings[0] = 1; //музыка включена
+    // this.settings[1] = 1; //звуки включены
     // this.tryBack = false;
     window.addEventListener('hashchange', this.switchToStateFromURLHash);
     self = this;
@@ -74,7 +87,6 @@ export class Spa {
       window.removeEventListener('resize', this.game.reRunGameCont);
     }
     if (this.score) {
-      this.score.canvas.removeEventListener('click', this.score.checkScoreBackCont);
       window.removeEventListener('resize', this.score.reRunAScoreCont);
     }
     if (this.pageSet) {
@@ -84,19 +96,27 @@ export class Spa {
       this.about.canvas.removeEventListener('click', this.about.checkBackCont);
       window.removeEventListener('resize', this.about.reRunAboutCont);
     }
-    if (!this.main) {
-      this.main = new MainMenu(this);
-    }
     if (this.game) {
       window.removeEventListener('beforeunload', this.warnUser);
       window.removeEventListener('popstate', this.askToBack);
+    }
+    if (!this.main) {
+      this.main = new MainMenu(this);
     }
     this.main.initMenu();
   }
 
   startGamePage() {
+    if (!this.score) {
+      this.score = new Score(this);
+      this.score.start();
+    }
+    this.score.loadData();
     if (this.main) {
       this.main.removeListeners();
+    }
+    if (this.pageSet) {
+      this.pageSet.removeListeners();
     }
     if (!this.game) {
       this.game = new Game(this);
@@ -161,9 +181,6 @@ export class Spa {
     if (this.main) {
       this.main.removeListeners();
       window.removeEventListener('resize', this.main.reRunMenuCont);
-    }
-    if (!this.pageSet) {
-      this.pageSet = new SettingsPage(this);
     }
     this.pageSet.initPageSet();
   }
@@ -243,5 +260,94 @@ export class Spa {
     .split('"').join("&quot;")
     .split("'").join("&#039;");
     return text;
+  }
+
+  initApp() {
+    this.pageSet = new SettingsPage(this);
+    this.pageSet.init();
+    this.pageSet.addListeners();
+    console.log('слежка_шаг1');
+    this.loadSettings();
+    this.loadAudio();
+  }
+
+  // preloadAudioFiles(callback) {
+  //   console.log('слежка_шаг2');
+  //   let loaded = 0;
+  //   let required = Object.keys(this.audioF).length;
+  //   console.log(required);
+  //   const onAssetLoad = () => {
+  //     ++loaded;
+  //     console.log(loaded);
+  //     if (loaded >= required) {
+  //       callback();
+  //     }
+  //   };
+  //   this.loadAudio();
+  // }
+
+  loadAudio() {
+    console.log('слежка_шаг3');
+    for (let key in this.audioF) {
+      this.audioF[key] = new Audio(`../../sounds/${key}.mp3`);
+    }
+    this.audioF.melody.volume = 0.5;
+    this.audioF.melody.loop = true;
+    document.addEventListener('click', () => {
+      console.log('Опачки ! * !');
+      this.playMelody();
+    });
+  }
+
+  // loadAudio(onAssetLoadCallback) {
+  //   console.log('слежка_шаг3');
+  //   for (let key in this.audioF) {
+  //     this.audioF[key] = new Audio(`../../sounds/${key}.mp3`);
+  //     // this.audioF[key].src = '../../sounds/' + key + '.mp3';
+  //     this.audioF[key].addEventListener('load', onAssetLoadCallback);
+  //     console.log(this.audioF);
+  //     // this.audioF.melody.play();
+  //   }
+  // }
+
+  loadSettings() {
+    console.log('слежка_шаг5');
+    let storageLocalString = window.localStorage.getItem(this.storageName);
+    if (storageLocalString) {
+      this.pageSet.settings = JSON.parse(storageLocalString);
+      console.log('загрузили', JSON.parse(storageLocalString));
+    }
+  }
+
+  saveSettings() {
+    window.localStorage.setItem(this.storageName, JSON.stringify(this.pageSet.settings));
+    console.log('сохранили', JSON.stringify(this.pageSet.settings));
+  }
+
+  playMelody() {
+    if (this.pageSet.settings[0] === 1) {
+      this.audioF.melody.play();
+    }
+    if (this.pageSet.settings[0] === 0) {
+      this.audioF.melody.pause();
+    }
+  }
+
+  playClick() {
+    if (this.pageSet.settings[1] === 1) {
+      this.audioF.click.play();
+    }
+  }
+
+  playWrong() {
+    if (this.pageSet.settings[1] === 1) {
+      this.audioF.wrong.play();
+    }
+  }
+
+  playGood() {
+    if (this.pageSet.settings[1] === 1) {
+      this.audioF.good.play();
+    }
   }
 }

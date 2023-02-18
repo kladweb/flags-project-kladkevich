@@ -23,7 +23,7 @@ export class Game extends Component {
     this.boxOffsetY = [];
     this.levelGame = 4;
     this.currentRender = [0, 0, 0];  //текущее состояние для resize
-    this.liveDefault = 7; //начальное количество жизней
+    this.liveDefault = 5; //начальное количество жизней
     this.score = 0; //текущее количество баллов
     this.live = 0;  //текущее (оставшееся) количество жизней
     this.answerOptions = []; //массив с вариантами ответов;
@@ -46,6 +46,7 @@ export class Game extends Component {
     this.preloadStartData(() => {
       this.startFirstGame();
     });
+    this.spa.playMelody();
     this.start();
   }
 
@@ -386,8 +387,10 @@ export class Game extends Component {
     let colorFrame;
     if (this.checkAnswer(num)) {
       colorFrame = this.colors.green;
+      this.spa.playGood();
     } else {
       colorFrame = this.colors.shiraz;
+      this.spa.playWrong();
     }
     this.renderResultWhite(num, colorFrame);
   }
@@ -441,6 +444,7 @@ export class Game extends Component {
   renderArrow(num) {
     if (this.checkAnswer(num)) {
       this.score++;
+      delete this.unsolvedFlags[this.activeFlag];
       this.renderArrowRight1(num);
     } else {
       this.live--;
@@ -471,7 +475,6 @@ export class Game extends Component {
       });
     } else {
       let timerArrow1 = setInterval(() => {
-        // self.ctx.globalAlpha = 0.8;
         this.ctx.lineWidth = 8;
         this.ctx.moveTo(XCurrent, YCurrent);
         XCurrent = XCurrent + XInterval;
@@ -480,20 +483,20 @@ export class Game extends Component {
         this.ctx.stroke();
         if (YCurrent >= YEnd || XCurrent >= XEnd) {
           // console.log('закончили')
-          this.renderArrowRight2(num);
+          this.renderArrowRight2(num, XCurrent, YCurrent);
           clearTimeout(timerArrow1);
         }
       }, 40);
     }
   }
 
-  renderArrowRight2(num) {
+  renderArrowRight2(num, XCurr, YCurr) {
     // console.log('стартанули 2', num);
-    let XStart = this.boxOffsetX[num] + this.boxWidth / 2;
+    let XStart = XCurr;
     let XEnd = this.boxOffsetX[num] + this.boxHeight / 3 + this.boxWidth / 2;
     let XInterval = (XEnd - XStart) / 4;
     let XCurrent = XStart;
-    let YStart = this.boxOffsetY[num] + this.boxHeight - this.boxHeight / 5;
+    let YStart = YCurr;
     let YEnd = this.boxOffsetY[num] + this.boxHeight / 4;
     let YInterval = (YEnd - YStart) / 4;
     let YCurrent = YStart;
@@ -583,7 +586,6 @@ export class Game extends Component {
   }
 
   continueGame() {
-    delete this.unsolvedFlags[this.activeFlag];
     if (Object.keys(this.unsolvedFlags).length <= 0) {
       this.finishText = 'You are winner!';
       this.finishGame();
@@ -748,6 +750,7 @@ export class Game extends Component {
   }
 
   resultFinish(num) {
+    this.spa.playClick();
     this.removeFinishListeners();
     if (num === 0) {
       this.initGame();
