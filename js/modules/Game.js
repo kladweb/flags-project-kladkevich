@@ -1,11 +1,10 @@
 import {Component} from './Component.js';
-import {flagsAll} from './flagsAll.js';
 
 export class Game extends Component {
   constructor(spa) {
     super();
     this.spa = spa;
-    this.flagsAll = flagsAll;  //объект, содержащий все флаги
+    this.flagsAll = null;  //объект, содержащий все флаги
     this.unsolvedFlags = {};  //объект, содержащий неразгаданные флаги
     this.imgFlags = []; //загруженные флаги
     this.activeFlag = null; //рандомный флаг (рандомный ключ объекта imagesFlags)
@@ -36,19 +35,37 @@ export class Game extends Component {
     };
   }
 
-
   initGame() {
     this.goBack = true;
     this.live = this.liveDefault;
     this.score = 0;
-    Object.assign(this.unsolvedFlags, this.flagsAll);
     this.reRunGameCont = this.reRunGame.bind(this);
     window.addEventListener('resize', this.reRunGameCont);
+    this.loadFlags();
+    this.start();
+  }
+
+  loadFlags() {
+    $.ajax('../../json/flagsAll.json',
+      {type: 'GET', dataType: 'json', success: this.getFlags.bind(this), error: this.errorHandler}
+    );
+  }
+
+  getFlags(data) {
+    this.flagsAll = data;
+    Object.assign(this.unsolvedFlags, this.flagsAll);
+    console.log('ЗЗЗЗЗЗМММММСССС', this.flagsAll);
+    this.loadGame();
+  }
+
+  errorHandler(jqXHR, StatusStr, ErrorStr) {
+    alert(StatusStr + ' ' + ErrorStr);
+  }
+
+  loadGame() {
     this.preloadStartData(() => {
       this.startFirstGame();
     });
-    this.spa.playMelody();
-    this.start();
   }
 
   startFirstGame() {
@@ -65,7 +82,6 @@ export class Game extends Component {
 
   loadImgData() {
     this.preloadImgFiles(() => {
-      console.log('отсюда: loadImgData');
       this.startGame();
     });
   }
@@ -106,6 +122,7 @@ export class Game extends Component {
   }
 
   runGame() {
+    this.spa.playMelody();
     this.createGameSizes();
     this.renderBackground();
     this.renderFrame();
@@ -354,14 +371,12 @@ export class Game extends Component {
         if (this.activeAnswer[i] !== 1) {
           e.target.style.cursor = 'url(../img/cursors/earth-pointer.png), pointer';
           this.renderAnswer(i, this.colors.osloGrayL, this.colors.spicyMixL, this.colors.white);
-          // console.log('Variant ', i, ' change');
           this.activeAnswer[i] = 1;
         }
       } else {
         if (this.activeAnswer[i] === 1) {
           e.target.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
           this.renderAnswer(i, this.colors.osloGray, this.colors.spicyMix, this.colors.gallery);
-          // console.log('Variant ', i, ' return');
           this.activeAnswer[i] = 0;
         }
       }
@@ -443,6 +458,7 @@ export class Game extends Component {
   }
 
   renderArrow(num) {
+    this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
     if (this.checkAnswer(num)) {
       this.score++;
       delete this.unsolvedFlags[this.activeFlag];
@@ -454,7 +470,6 @@ export class Game extends Component {
   }
 
   renderArrowRight1(num) {
-    // console.log('стартанули', num);
     let XStart = this.boxOffsetX[num] - this.boxHeight / 4 + this.boxWidth / 2;
     let XEnd = this.boxOffsetX[num] + this.boxWidth / 2;
     let XInterval = (XEnd - XStart) / 4;
@@ -518,9 +533,7 @@ export class Game extends Component {
         this.ctx.lineTo(XCurrent, YCurrent);
         this.ctx.stroke();
         if (YCurrent <= YEnd || XCurrent >= XEnd) {
-          // console.log('закончили2')
           clearTimeout(timerArrow2);
-          this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
           this.currentRender = [2, num, this.colors.green];
           this.continueGame();
         }
@@ -529,7 +542,6 @@ export class Game extends Component {
   }
 
   renderArrowWrong(num) {
-    // console.log(num, 'стартанули');
     let XStart = this.boxOffsetX[num] + this.boxWidth / 2;
     let XEnd = [];
     XEnd[0] = XStart - this.boxHeight / 3;

@@ -80,16 +80,14 @@ export class Component {
     this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
   }
 
-  renderBackground() {
+  renderBackground(Alpha = 0.75) {
     window.requestAnimationFrame(() => {
       this.ctx.clearRect(0, 0, this.width, this.height);
       this.ctx.drawImage(this.imageBackground, 0, 0);
       this.ctx.fillStyle = this.colors.spicyMix;
-      this.ctx.globalAlpha = 0.75;
+      this.ctx.globalAlpha = Alpha;
       this.ctx.fillRect(0, 0, this.width, this.height);
       this.ctx.globalAlpha = 1;
-      // this.changeBack = new Event('changeBack'); // сообщаем ВСЕМ заинтересованным
-      // document.dispatchEvent(this.changeBack); // что бэкграунд отрендерился
     });
   }
 

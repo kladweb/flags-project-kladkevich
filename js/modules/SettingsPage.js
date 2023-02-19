@@ -4,14 +4,16 @@ export class SettingsPage extends Component {
   constructor(spa) {
     super();
     this.spa = spa;
-    this.checkedImg = [];  //массив с двумя png чередующимися картинками (с галочкой и без галочки);
+    this.checkedImg = [];  //массив с двумя 'png' чередующимися картинками (с галочкой и без галочки);
     this.imgSet = {
       checked: null,
-      unchecked: null
+      unchecked: null,
+      button: null
     };
-    this.settings = [1, 1];
+    this.settings = [1, 1, 1];
     // this.settings[0] = 1; //музыка включена
     // this.settings[1] = 1; //звуки включены
+    // this.settings[2] = 1; //вибрация включена
   }
 
   initPageSet() {
@@ -25,16 +27,14 @@ export class SettingsPage extends Component {
 
   preloadSetPageData(callback) {
     this.imageBackground = new Image();
-    this.imageBackground.src = `img/shared/background.png`;
+    this.imageBackground.src = `../../img/shared/background.png`;
     this.imageBackground.addEventListener('load', callback);
   }
 
   loadSet() {
     this.renderBackground();
-    // this.renderSetPage();
     this.loadCheckedImg();
     this.addListeners();
-    console.log(' НУЖНЫЦ СЛУШАТЕЛЬ !!! ЕСТЬ');
   }
 
   loadCheckedImg() {
@@ -69,24 +69,34 @@ export class SettingsPage extends Component {
     this.renderSetPage();
   }
 
+  reRunSetPage() {
+    this.initDimensions();
+    this.renderBackground();
+    this.renderSetPage();
+  }
+
   addListeners() {
-    console.log('нузный ЗИС', this);
+    console.log('ADD LISTENERS');
     this.checkClickCheckThis = this.checkClickCheck.bind(this);
     this.canvas.addEventListener('click', this.checkClickCheckThis);
+    this.reRunSetPageCont = this.reRunSetPage.bind(this);
+    window.addEventListener('resize', this.reRunSetPageCont);
   }
 
   removeListeners() {
     this.canvas.removeEventListener('click', this.checkClickCheckThis);
+    window.removeEventListener('resize', this.reRunSetPageCont);
   }
 
   checkClickCheck(e) {
-    console.log('НУЖНЫЙ КЛИК', e);
     let zoom = this.calcZoom();
-    for (let j = 0; j <= 1; j++) {
+    for (let j = 0; j <= 2; j++) {
       if (this.checkBorders(e, zoom, j)) {
-        // console.log('Variant', j, 'click');
         this.showResult(j);
       }
+    }
+    if (this.checkBordersButton(e, zoom)) {
+      this.returnMenu();
     }
   }
 
@@ -98,6 +108,14 @@ export class SettingsPage extends Component {
     return borderLeft && borderRight && borderTop && borderBottom;
   }
 
+  checkBordersButton(e, k) {
+    let borderLeft = e.pageX * k > this.butX;
+    let borderRight = e.pageX * k < this.butX + this.buttonWidth;
+    let borderTop = e.pageY * k > this.butY;
+    let borderBottom = e.pageY * k < this.butY + this.buttonHeight;
+    return borderLeft && borderRight && borderTop && borderBottom;
+  }
+
   calcZoom() {
     let oldCanvas = document.getElementById('cva');
     let currentSizes = this.canvas.getBoundingClientRect();
@@ -105,15 +123,11 @@ export class SettingsPage extends Component {
   }
 
   showResult(num) {
-    // if (num === 0) {
-    //   this.spa.playMelody();
-    // }
     this.settings[num] = (this.settings[num] === 1) ? 0 : 1;
     if (this.settings[1] === 1) {
       this.spa.playClick();
     }
     this.spa.saveSettings();
-    // console.log(this.settings[num]);
     this.renderBackground();
     this.renderSetPage();
   }
@@ -132,8 +146,8 @@ export class SettingsPage extends Component {
       this.Y1 = this.textSetSize * 4.5;
     }
     if (aspectRatioWindow > 1 && aspectRatioWindow <= 1.5) {
-      this.textSetSize = this.width / 35;
-      this.X1 = this.width / 3.5;
+      this.textSetSize = this.width / 38;
+      this.X1 = this.width / 4;
       this.Y1 = this.textSetSize * 3;
     }
     if (aspectRatioWindow > 1.5) {
@@ -161,6 +175,31 @@ export class SettingsPage extends Component {
     currYText = this.Y[1] + this.checkSize / 1.5;
     this.renderSetText(text2, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
     this.renderChecked(this.checkedImg[this.settings[1]], this.X2, this.Y[1]);
+    this.Y[2] = this.Y[1] + this.textSetSize * 5;
+    let text3 = 'VIBRATION';
+    let text4 = '(only for phones)';
+    currYText = this.Y[2] + this.checkSize / 1.5;
+    this.renderSetText(text3, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
+    currYText += this.textSetSize * 1.5;
+    this.renderSetText(text4, this.X1, currYText, this.textSetSize, this.colors.osloGrayL, Al);
+    this.renderChecked(this.checkedImg[this.settings[2]], this.X2, this.Y[2]);
+    this.butY = this.height - this.textSetSize * 5;
+    let aspectRatioButton = this.imgSet.button.width / this.imgSet.button.height;
+    this.buttonHeight = this.checkSize;
+    this.buttonWidth = this.buttonHeight * aspectRatioButton;
+    this.butX = (this.width - this.buttonWidth) / 2;
+    this.renderButtonReturn(this.butX, this.butY);
+    let text5 = 'RETURN TO MENU';
+    Al = 'center';
+    currentX = this.butX + this.buttonWidth / 2;
+    currentY = this.butY + this.buttonHeight / 2;
+    this.renderSetText(text5, currentX, currentY, this.textSetSize / 1.5, this.colors.gallery, Al);
+  }
+
+  renderButtonReturn(X, Y) {
+    window.requestAnimationFrame(() => {
+      this.ctx.drawImage(this.imgSet.button, X, Y, this.buttonWidth, this.buttonHeight);
+    });
   }
 
   renderSetText(text, currentX, currentY, textSize, color, Align) {
@@ -178,5 +217,11 @@ export class SettingsPage extends Component {
     window.requestAnimationFrame(() => {
       this.ctx.drawImage(img, X, Y, this.checkSize, this.checkSize);
     });
+  }
+
+  returnMenu() {
+    this.spa.playClick();
+    this.removeListeners();
+    this.spa.switchToMainPage();
   }
 }

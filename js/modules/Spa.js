@@ -168,6 +168,9 @@ export class Spa {
       this.main.removeListeners();
       window.removeEventListener('resize', this.main.reRunMenuCont);
     }
+    if (this.pageSet) {
+      this.pageSet.removeListeners();
+    }
     if (!this.score) {
       this.score = new Score(this);
     }
@@ -263,65 +266,34 @@ export class Spa {
   }
 
   initApp() {
+    console.log('INIT PAGE');
     this.pageSet = new SettingsPage(this);
     this.pageSet.init();
-    this.pageSet.addListeners();
-    console.log('слежка_шаг1');
+    // this.pageSet.addListeners();
     this.loadSettings();
     this.loadAudio();
   }
 
-  // preloadAudioFiles(callback) {
-  //   console.log('слежка_шаг2');
-  //   let loaded = 0;
-  //   let required = Object.keys(this.audioF).length;
-  //   console.log(required);
-  //   const onAssetLoad = () => {
-  //     ++loaded;
-  //     console.log(loaded);
-  //     if (loaded >= required) {
-  //       callback();
-  //     }
-  //   };
-  //   this.loadAudio();
-  // }
-
   loadAudio() {
-    console.log('слежка_шаг3');
     for (let key in this.audioF) {
       this.audioF[key] = new Audio(`../../sounds/${key}.mp3`);
     }
     this.audioF.melody.volume = 0.5;
     this.audioF.melody.loop = true;
     document.addEventListener('click', () => {
-      console.log('Опачки ! * !');
       this.playMelody();
     });
   }
 
-  // loadAudio(onAssetLoadCallback) {
-  //   console.log('слежка_шаг3');
-  //   for (let key in this.audioF) {
-  //     this.audioF[key] = new Audio(`../../sounds/${key}.mp3`);
-  //     // this.audioF[key].src = '../../sounds/' + key + '.mp3';
-  //     this.audioF[key].addEventListener('load', onAssetLoadCallback);
-  //     console.log(this.audioF);
-  //     // this.audioF.melody.play();
-  //   }
-  // }
-
   loadSettings() {
-    console.log('слежка_шаг5');
     let storageLocalString = window.localStorage.getItem(this.storageName);
     if (storageLocalString) {
       this.pageSet.settings = JSON.parse(storageLocalString);
-      console.log('загрузили', JSON.parse(storageLocalString));
     }
   }
 
   saveSettings() {
     window.localStorage.setItem(this.storageName, JSON.stringify(this.pageSet.settings));
-    console.log('сохранили', JSON.stringify(this.pageSet.settings));
   }
 
   playMelody() {

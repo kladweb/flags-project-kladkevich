@@ -4,6 +4,7 @@ import {Game} from './Game.js';
 export class MainMenu extends Component {
   constructor(spa) {
     super();
+    this.font = 'Jemima-Bold';
     this.spa = spa;
     this.logoWidth = 300; //предварительные размеры логотипа
     this.logoHeight = 200;
@@ -66,9 +67,9 @@ export class MainMenu extends Component {
     this.createMenuSizes();
     this.addListeners();
     this.renderMenu();
-    // if (this.spa.audioF.melody.paused) {
-    //   this.spa.audioF.melody.play();
-    // }
+    window.addEventListener('load', () => {
+      this.reRunMenu();
+    });
   }
 
   reRunMenu() {
@@ -81,7 +82,6 @@ export class MainMenu extends Component {
     const promise = new Promise(res => res());
     promise.then(() => {
       this.renderBackground();
-      // console.log('рендер промис');
     })
     .then(() => {
       this.renderLogo();
@@ -119,7 +119,6 @@ export class MainMenu extends Component {
       }
     }
     if (aspectRatioWindow > 0.5 && aspectRatioWindow <= 1.5) {
-      console.log('|', aspectRatioWindow);
       this.logoWidth = this.width * 0.5 / ((aspectRatioWindow < 1) ? 1 : aspectRatioWindow);
       this.logoHeight = this.logoWidth / aspectRatioLogo;
       this.logoOffsetY = (this.height - this.logoHeight * 1.5) / 2;
@@ -144,7 +143,6 @@ export class MainMenu extends Component {
     }
 
     if (aspectRatioWindow > 1.5) {
-      // console.log('---', aspectRatioWindow);
       this.logoHeight = this.height / 2;
       this.logoWidth = this.logoHeight * aspectRatioLogo;
       this.logoOffsetY = (this.height - this.logoHeight) / 2;

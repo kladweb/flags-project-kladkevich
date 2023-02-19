@@ -9,7 +9,7 @@ export class About extends Component {
     this.textAbout[1] = 'Guess as many country flags as possible. Perhaps you will become the best quiz player! ' +
       'There is no time limit for guessing the flag! I wish you good luck!';
     this.textAbout[2] = 'ABOUT THE PROJECT';
-    this.textAbout[3] = 'This game was created as a part of the final project of the course \"Development of Web' +
+    this.textAbout[3] = 'This game was created as the final project of the course \"Development of Web' +
       ' Applications in JavaScript\" with using canvas graphics. This project was developed by Pavel Kladkevich' +
       ' under the guidance of the teacher Aliaksandr Stashkevich.'
     this.textAbout[4] = '\"To travel is to live\" - Hans Christian Andersen';
