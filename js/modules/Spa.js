@@ -15,13 +15,6 @@ export class Spa {
       click: null
     }
     this.storageName = 'settFlagGame';
-    // this.settings = {
-    //   'music': 1,
-    //   'sounds': 1
-    // };
-    // this.settings[0] = 1; //музыка включена
-    // this.settings[1] = 1; //звуки включены
-    // this.tryBack = false;
     window.addEventListener('hashchange', this.switchToStateFromURLHash);
     self = this;
   }
@@ -218,7 +211,7 @@ export class Spa {
       let currentName = prompt(
         'Congratulations!\n' +
         'You are in the high score table!\n' +
-        'Enter your first and/or last name:');
+        'Please, enter your first or/and last name:');
       if (currentName) {
         currentName = this.nameProcessing(currentName);
         let now = new Date;
@@ -289,6 +282,12 @@ export class Spa {
     let storageLocalString = window.localStorage.getItem(this.storageName);
     if (storageLocalString) {
       this.pageSet.settings = JSON.parse(storageLocalString);
+    } else {
+      this.pageSet.settings = [1, 1, 1];
+    }
+    if (!this.pageSet.isMobile) {
+      this.pageSet.settings[2] = 0;
+      this.saveSettings();
     }
   }
 
@@ -309,17 +308,26 @@ export class Spa {
     if (this.pageSet.settings[1] === 1) {
       this.audioF.click.play();
     }
+    if (this.pageSet.settings[2] === 1) {
+      window.navigator.vibrate(10);
+    }
   }
 
   playWrong() {
     if (this.pageSet.settings[1] === 1) {
       this.audioF.wrong.play();
     }
+    if (this.pageSet.settings[2] === 1) {
+      window.navigator.vibrate([50, 100, 150]);
+    }
   }
 
   playGood() {
     if (this.pageSet.settings[1] === 1) {
       this.audioF.good.play();
+    }
+    if (this.pageSet.settings[2] === 1) {
+      window.navigator.vibrate([50, 100, 50]);
     }
   }
 }

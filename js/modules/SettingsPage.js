@@ -4,19 +4,21 @@ export class SettingsPage extends Component {
   constructor(spa) {
     super();
     this.spa = spa;
+    this.isMobile = null;  //является ли устройство мобильным (для включения возможностей вибро);
     this.checkedImg = [];  //массив с двумя 'png' чередующимися картинками (с галочкой и без галочки);
     this.imgSet = {
       checked: null,
       unchecked: null,
       button: null
     };
-    this.settings = [1, 1, 1];
+    this.settings = [1, 1, 1];  //загружаются из localStorage
     // this.settings[0] = 1; //музыка включена
     // this.settings[1] = 1; //звуки включены
     // this.settings[2] = 1; //вибрация включена
   }
 
   initPageSet() {
+    this.isMobile = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent);
     this.spa.playMelody();
     this.start();
     this.setCursor();
@@ -76,7 +78,6 @@ export class SettingsPage extends Component {
   }
 
   addListeners() {
-    console.log('ADD LISTENERS');
     this.checkClickCheckThis = this.checkClickCheck.bind(this);
     this.canvas.addEventListener('click', this.checkClickCheckThis);
     this.reRunSetPageCont = this.reRunSetPage.bind(this);
@@ -90,7 +91,8 @@ export class SettingsPage extends Component {
 
   checkClickCheck(e) {
     let zoom = this.calcZoom();
-    for (let j = 0; j <= 2; j++) {
+
+    for (let j = 0; j <= 1 + this.isMobile; j++) {
       if (this.checkBorders(e, zoom, j)) {
         this.showResult(j);
       }
@@ -182,18 +184,19 @@ export class SettingsPage extends Component {
     this.renderSetText(text3, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
     currYText += this.textSetSize * 1.5;
     this.renderSetText(text4, this.X1, currYText, this.textSetSize, this.colors.osloGrayL, Al);
-    this.renderChecked(this.checkedImg[this.settings[2]], this.X2, this.Y[2]);
+    let Alpha = (this.isMobile) ? 1 : 0.2;
+    this.renderChecked(this.checkedImg[this.settings[2]], this.X2, this.Y[2], Alpha);
     this.butY = this.height - this.textSetSize * 5;
     let aspectRatioButton = this.imgSet.button.width / this.imgSet.button.height;
     this.buttonHeight = this.checkSize;
     this.buttonWidth = this.buttonHeight * aspectRatioButton;
     this.butX = (this.width - this.buttonWidth) / 2;
     this.renderButtonReturn(this.butX, this.butY);
-    let text5 = 'RETURN TO MENU';
+    let text5 = 'HOME';
     Al = 'center';
     currentX = this.butX + this.buttonWidth / 2;
     currentY = this.butY + this.buttonHeight / 2;
-    this.renderSetText(text5, currentX, currentY, this.textSetSize / 1.5, this.colors.gallery, Al);
+    this.renderSetText(text5, currentX, currentY, this.textSetSize / 1.2, this.colors.gallery, Al);
   }
 
   renderButtonReturn(X, Y) {
@@ -213,9 +216,11 @@ export class SettingsPage extends Component {
     });
   }
 
-  renderChecked(img, X, Y) {
+  renderChecked(img, X, Y, Alpha = 1) {
     window.requestAnimationFrame(() => {
+      this.ctx.globalAlpha = Alpha;
       this.ctx.drawImage(img, X, Y, this.checkSize, this.checkSize);
+      this.ctx.globalAlpha = 1;
     });
   }
 

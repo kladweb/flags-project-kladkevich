@@ -123,25 +123,15 @@ export class About extends Component {
       }
     }
     this.renderAboutText(line, marginLeft, marginTop, this.aboutSize, this.colors.gallery);
-    this.marginTop = marginTop += this.aboutSize * 2;
+    this.marginTop = marginTop + this.aboutSize * 2;
   }
 
   renderQuote() {
     this.ctx.font = `${this.aboutSize}px ${this.font}`;
     this.ctx.fillStyle = this.colors.gallery;
     let marginLeft = this.width - this.ctx.measureText(this.textAbout[4]).width - this.aboutSize;
-    let marginTop = this.height - this.getFontHeight(this.ctx.font);
+    let marginTop = this.height - this.aboutSize * 1.2;
     this.renderAboutText(this.textAbout[4], marginLeft, marginTop, this.aboutSize, this.colors.gallery);
-  }
-
-  getFontHeight(font) {
-    let parent = document.createElement('span');
-    parent.appendChild(document.createTextNode('height'));
-    document.body.appendChild(parent);
-    parent.style.cssText = "font: " + font + "; white-space: nowrap; display: inline;";
-    let height = parent.offsetHeight;
-    document.body.removeChild(parent);
-    return height;
   }
 
   renderAboutText(text, currentX, currentY, aboutSize, color) {

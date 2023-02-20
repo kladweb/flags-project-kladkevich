@@ -1,22 +1,19 @@
 import {Component} from './Component.js';
-import {Game} from './Game.js';
 
 export class MainMenu extends Component {
   constructor(spa) {
     super();
-    this.font = 'Jemima-Bold';
     this.spa = spa;
     this.logoWidth = 300; //предварительные размеры логотипа
     this.logoHeight = 200;
     this.butWidth = 0; //размеры кнопок главного меню
     this.butHeight = 0;
-    this.butNames = ['PLAY', 'HI SCORES', 'SETTINGS', 'ABOUT'];
+    this.butNames = ['PLAY', 'HI SCORES', 'SETTINGS', 'ABOUT GAME'];
     this.imgM = {
       logo: null,
       button: null
     };
     this.activeButton = [0, 0, 0, 0];
-    // self = this;
   }
 
   initMenu() {
@@ -215,7 +212,6 @@ export class MainMenu extends Component {
   }
 
   removeListeners() {
-    console.log('удалили слушателей меню');
     this.canvas.removeEventListener('click', this.checkClickAnswerThis);
     this.canvas.removeEventListener('mousemove', this.checkMoveAnswerThis);
   }

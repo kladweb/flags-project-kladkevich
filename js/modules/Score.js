@@ -59,7 +59,6 @@ export class Score extends Component {
       fd
     );
     if (responseData) {
-      console.log('INSERT response: ', responseData);
       this.scList = JSON.parse(responseData.result);
       return responseData;
     } else {

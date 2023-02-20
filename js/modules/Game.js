@@ -54,7 +54,6 @@ export class Game extends Component {
   getFlags(data) {
     this.flagsAll = data;
     Object.assign(this.unsolvedFlags, this.flagsAll);
-    console.log('ЗЗЗЗЗЗМММММСССС', this.flagsAll);
     this.loadGame();
   }
 
@@ -398,6 +397,7 @@ export class Game extends Component {
   }
 
   showResult(num) {
+    this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
     this.goBack = false;
     this.removeListeners();
     let colorFrame;
@@ -429,7 +429,7 @@ export class Game extends Component {
         this.renderResultColor(num, color);
         this.renderArrow(num);
       }
-    }, 100);
+    }, 70);
   }
 
   renderResultColor(num, color) {
@@ -458,7 +458,6 @@ export class Game extends Component {
   }
 
   renderArrow(num) {
-    this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
     if (this.checkAnswer(num)) {
       this.score++;
       delete this.unsolvedFlags[this.activeFlag];
@@ -498,7 +497,6 @@ export class Game extends Component {
         this.ctx.lineTo(XCurrent, YCurrent);
         this.ctx.stroke();
         if (YCurrent >= YEnd || XCurrent >= XEnd) {
-          // console.log('закончили')
           this.renderArrowRight2(num, XCurrent, YCurrent);
           clearTimeout(timerArrow1);
         }
@@ -507,14 +505,13 @@ export class Game extends Component {
   }
 
   renderArrowRight2(num, XCurr, YCurr) {
-    // console.log('стартанули 2', num);
     let XStart = XCurr;
-    let XEnd = this.boxOffsetX[num] + this.boxHeight / 3 + this.boxWidth / 2;
-    let XInterval = (XEnd - XStart) / 4;
+    let XEnd = this.boxOffsetX[num] + this.boxWidth / 2 + this.boxHeight / 3;
+    let XInterval = (XEnd - XStart) / 5;
     let XCurrent = XStart;
     let YStart = YCurr;
-    let YEnd = this.boxOffsetY[num] + this.boxHeight / 4;
-    let YInterval = (YEnd - YStart) / 4;
+    let YEnd = this.boxOffsetY[num] + this.boxHeight / 4 - this.boxFrameSize;
+    let YInterval = (YEnd - YStart) / 5;
     let YCurrent = YStart;
     if (this.currentRender[0] === 2) {
       window.requestAnimationFrame(() => {
@@ -525,19 +522,20 @@ export class Game extends Component {
       });
     } else {
       let timerArrow2 = setInterval(() => {
-        // self.game.ctx.beginPath();
+        this.ctx.globalAlpha = 1;
         this.ctx.lineWidth = 8;
         this.ctx.moveTo(XCurrent, YCurrent);
         XCurrent = XCurrent + XInterval;
         YCurrent = YCurrent + YInterval;
         this.ctx.lineTo(XCurrent, YCurrent);
         this.ctx.stroke();
+
         if (YCurrent <= YEnd || XCurrent >= XEnd) {
           clearTimeout(timerArrow2);
           this.currentRender = [2, num, this.colors.green];
           this.continueGame();
         }
-      }, 40);
+      }, 30);
     }
   }
 
@@ -610,7 +608,6 @@ export class Game extends Component {
   }
 
   renderMessageContinue() {
-    // console.log('renderMessageContinue');
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'center';
       const infoSize = this.flagWidth / 17;
@@ -681,7 +678,7 @@ export class Game extends Component {
         this.renderFinButton(this.imgGame.button, this.finButX[i], this.finButY, this.finButWidth, this.finButHeight);
       });
     }
-    this.textButton = ['PLAY NEW GAME', 'RETURN TO MENU'];
+    this.textButton = ['PLAY NEW GAME', 'HOME'];
     this.ctx.globalAlpha = 1;
     for (let i = 0; i < 2; i++) {
       let currentTextX = this.finButX[i] + this.finButWidth / 2;
