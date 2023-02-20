@@ -53,14 +53,12 @@ export class MainMenu extends Component {
   }
 
   runMenu() {
+    this.initDimensions();
     this.reRunMenuCont = this.reRunMenu.bind(this);
     window.addEventListener('resize', this.reRunMenuCont);
     this.createMenuSizes();
     this.addListeners();
     this.renderMenu();
-    window.addEventListener('load', () => {
-      this.reRunMenu();
-    });
   }
 
   reRunMenu() {
@@ -171,17 +169,18 @@ export class MainMenu extends Component {
   }
 
   renderMenuButtons() {
+    console.log('draw but');
     window.requestAnimationFrame(() => {
-      this.ctx.globalAlpha = 0.75;
       for (let i = 0; i <= 3; i++) {
+        this.ctx.globalAlpha = 0.75;
         this.renderButton(this.imgM.button, this.butOffsetX[i], this.butOffsetY[i], this.butWidth, this.butHeight);
       }
-      this.ctx.globalAlpha = 1;
       const textSize = this.butHeight / 2.5;
       this.ctx.font = `${textSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.gallery;
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
+      this.ctx.globalAlpha = 1;
       for (let i = 0; i <= 3; i++) {
         let currentTextX = this.butOffsetX[i] + this.butWidth / 2;
         let currentTextY = this.butOffsetY[i] + this.butHeight / 1.8;

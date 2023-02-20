@@ -21,7 +21,7 @@ export class Game extends Component {
     this.boxOffsetX = [];  //координаты рамок с ответами
     this.boxOffsetY = [];
     this.nAnswers = 4; //количество вариантов ответов
-    this.currentRender = [0, 0, 0];  //текущее состояние для resize
+    this.currentRender = [0, 0, 0];  //текущее состояние для resize (номер состояния, номер ответа, цвет)
     this.liveDefault = 5; //начальное количество жизней
     this.score = 0; //текущее количество баллов
     this.live = 0;  //текущее (оставшееся) количество жизней
@@ -106,7 +106,7 @@ export class Game extends Component {
   }
 
   startGame() {
-    this.currentRender = [0, 0, 0];
+    this.currentRender = [-1, 0, 0];
     this.setCursor();
     this.getRandomFlag();
     this.getRandomAnswers();
@@ -221,13 +221,30 @@ export class Game extends Component {
   }
 
   renderFlag() {
-    window.requestAnimationFrame(() => {
-      let aspectRatioFlag = this.activeImgFlag.width / this.activeImgFlag.height;
-      let imageWidth = this.flagHeight * aspectRatioFlag;
-      let imageX = this.flagOffsetX + (this.flagWidth - imageWidth) / 2;
-      this.ctx.globalAlpha = 1;
-      this.ctx.drawImage(this.activeImgFlag, imageX, this.flagOffsetY, imageWidth, this.flagHeight);
-    });
+    let aspectRatioFlag = this.activeImgFlag.width / this.activeImgFlag.height;
+    let imageWidth = this.flagHeight * aspectRatioFlag;
+    let imageX = this.flagOffsetX + (this.flagWidth - imageWidth) / 2;
+    if (this.currentRender[0] === -1) {
+      let j = 0;
+      //анимация для плавного появления флага
+      setTimeout(() => {
+        let timerFlag = setInterval(() => {
+          this.ctx.globalAlpha = j;
+          this.ctx.drawImage(this.activeImgFlag, imageX, this.flagOffsetY, imageWidth, this.flagHeight);
+          j += 0.05;
+          if (j > 1) {
+            clearTimeout(timerFlag);
+            this.ctx.globalAlpha = 1;
+          }
+        }, 100);
+      }, 150);
+    } else {
+      window.requestAnimationFrame(() => {
+        this.ctx.globalAlpha = 1;
+        this.ctx.drawImage(this.activeImgFlag, imageX, this.flagOffsetY, imageWidth, this.flagHeight);
+      });
+    }
+    this.currentRender[0] = 0;
   }
 
   renderScore() {

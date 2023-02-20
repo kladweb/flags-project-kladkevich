@@ -76,7 +76,6 @@ export class Spa {
       this.main.initMenu();
     } else {
       this.main.runMenu();
-      this.main.reRunMenu();
     }
     if (this.game) {
       this.game.removeListeners();
@@ -112,34 +111,6 @@ export class Spa {
     window.addEventListener('popstate', this.askToBack);
   }
 
-  warnUser(e) {
-    if (!self.game.goBack) {
-      e.returnValue = 'You have made changes. They will be lost if you continue.';
-      return 'You have made changes. They will be lost if you continue.';
-    } else {
-      e.returnValue = null;
-    }
-  }
-
-  askToBack(e) {
-    if (!self.game.goBack) {
-      let ask = confirm('You have made changes. Do you really want to go back?');
-      if (ask) {
-        self.game.removeListeners();
-        self.game.canvas.removeEventListener('click', self.game.checkContinueCont);
-        window.removeEventListener('popstate', self.askToBack);
-      } else {
-        window.removeEventListener('hashchange', self.switchToStateFromURLHash);
-        window.removeEventListener('popstate', self.askToBack);
-        self.switchToGamePage();
-        setTimeout(() => {
-          window.addEventListener('hashchange', self.switchToStateFromURLHash);
-          window.addEventListener('popstate', self.askToBack);
-        }, 200);
-      }
-    }
-  }
-
   startHiScorePage() {
     if (this.main) {
       this.main.removeListeners();
@@ -173,6 +144,34 @@ export class Spa {
       this.about = new About(this);
     }
     this.about.initAbout();
+  }
+
+  warnUser(e) {
+    if (!self.game.goBack) {
+      e.returnValue = 'You have made changes. They will be lost if you continue.';
+      return 'You have made changes. They will be lost if you continue.';
+    } else {
+      e.returnValue = null;
+    }
+  }
+
+  askToBack(e) {
+    if (!self.game.goBack) {
+      let ask = confirm('You have made changes. Do you really want to go back?');
+      if (ask) {
+        self.game.removeListeners();
+        self.game.canvas.removeEventListener('click', self.game.checkContinueCont);
+        window.removeEventListener('popstate', self.askToBack);
+      } else {
+        window.removeEventListener('hashchange', self.switchToStateFromURLHash);
+        window.removeEventListener('popstate', self.askToBack);
+        self.switchToGamePage();
+        setTimeout(() => {
+          window.addEventListener('hashchange', self.switchToStateFromURLHash);
+          window.addEventListener('popstate', self.askToBack);
+        }, 200);
+      }
+    }
   }
 
   checkResult() {
@@ -304,7 +303,7 @@ export class Spa {
       this.audioF.good.play();
     }
     if (this.pageSet.settings[2] === 1) {
-      window.navigator.vibrate([10, 1000, 50]);
+      window.navigator.vibrate([10, 1000, 10, 50, 10, 50, 10]);
     }
   }
 }
