@@ -255,6 +255,7 @@ export class Spa {
   }
 
   loadSettings() {
+    this.pageSet.isMobile = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent);
     let storageLocalString = window.localStorage.getItem(this.storageName);
     if (storageLocalString) {
       this.pageSet.settings = JSON.parse(storageLocalString);

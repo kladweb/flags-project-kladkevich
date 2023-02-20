@@ -4,7 +4,7 @@ export class SettingsPage extends Component {
   constructor(spa) {
     super();
     this.spa = spa;
-    this.isMobile = null;  //является ли устройство мобильным (для включения возможностей вибро);
+    // this.isMobile = true;  //является ли устройство мобильным (для включения возможностей вибро);
     this.checkedImg = [];  //массив с двумя 'png' чередующимися картинками (с галочкой и без галочки);
     this.imgSet = {
       checked: null,
@@ -86,7 +86,7 @@ export class SettingsPage extends Component {
   checkClickCheck(e) {
     let zoom = this.calcZoom();
 
-    for (let j = 0; j <= 1 + this.isMobile; j++) {
+    for (let j = 0; j < 2 + this.isMobile; j++) {
       if (this.checkBorders(e, zoom, j)) {
         this.showResult(j);
       }
@@ -133,7 +133,6 @@ export class SettingsPage extends Component {
 
   renderSetPage() {
     let aspectRatioWindow = window.innerWidth / window.innerHeight;
-    // console.log(aspectRatioWindow);
     if (aspectRatioWindow <= 0.5) {
       this.textSetSize = this.width / 25;
       this.X1 = this.width / 4.5;
