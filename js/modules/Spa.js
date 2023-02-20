@@ -36,15 +36,12 @@ export class Spa {
         break;
       case 'hiScore':
         self.startHiScorePage()
-        console.log('HiScorePage');
         break;
       case 'settings':
         self.startSettingsPage();
-        console.log('Settings');
         break;
       case 'about':
         self.startAboutPage();
-        console.log('About');
         break;
     }
   }
@@ -76,12 +73,16 @@ export class Spa {
   startMainMenu() {
     if (!this.main) {
       this.main = new MainMenu(this);
+      this.main.initMenu();
+    } else {
+      this.main.runMenu();
     }
-    this.main.initMenu();
     if (this.game) {
       this.game.removeListeners();
       this.game.removeFinishListeners();
       window.removeEventListener('resize', this.game.reRunGameCont);
+      window.removeEventListener('beforeunload', this.warnUser);
+      window.removeEventListener('popstate', this.askToBack);
     }
     if (this.score) {
       window.removeEventListener('resize', this.score.reRunAScoreCont);
@@ -93,30 +94,23 @@ export class Spa {
       this.about.canvas.removeEventListener('click', this.about.checkBackCont);
       window.removeEventListener('resize', this.about.reRunAboutCont);
     }
-    if (this.game) {
-      window.removeEventListener('beforeunload', this.warnUser);
-      window.removeEventListener('popstate', this.askToBack);
-    }
   }
 
   startGamePage() {
-    if (!this.score) {
-      this.score = new Score(this);
-      this.score.start();
+    if (!this.game) {
+      this.game = new Game(this);
     }
-    this.score.loadData();
+    this.game.initGame();
+    // if (!this.score) {
+    //   // this.score = new Score(this);
+    //   // this.score.start();
+    // }
+    // this.score.loadData();
     if (this.main) {
       this.main.removeListeners();
     }
     if (this.pageSet) {
       this.pageSet.removeListeners();
-    }
-    if (!this.game) {
-      this.game = new Game(this);
-      console.log('NEW GAME');
-      this.game.initGame();
-    } else {
-      this.game.initGame();
     }
     window.addEventListener('beforeunload', this.warnUser);
     window.addEventListener('popstate', this.askToBack);
@@ -138,7 +132,6 @@ export class Spa {
         self.game.removeListeners();
         self.game.canvas.removeEventListener('click', self.game.checkContinueCont);
         window.removeEventListener('popstate', self.askToBack);
-        console.log(555);
       } else {
         window.removeEventListener('hashchange', self.switchToStateFromURLHash);
         window.removeEventListener('popstate', self.askToBack);
@@ -159,10 +152,9 @@ export class Spa {
     if (this.pageSet) {
       this.pageSet.removeListeners();
     }
-    if (!this.score) {
-      this.score = new Score(this);
-    }
-
+    // if (!this.score) {
+    //   this.score = new Score(this);
+    // }
     this.score.loadData().then(() => {
       this.score.initScore();
     });
@@ -191,10 +183,6 @@ export class Spa {
   }
 
   checkResult() {
-    if (!this.score) {
-      this.score = new Score(this);
-    }
-
     this.score.loadData()
     .then(() => {
       this.checkScore();
@@ -254,12 +242,13 @@ export class Spa {
   }
 
   initApp() {
-    console.log('INIT PAGE');
     this.pageSet = new SettingsPage(this);
     this.pageSet.init();
-    // this.pageSet.addListeners();
     this.loadSettings();
     this.loadAudio();
+    this.score = new Score(this);
+    this.score.start();
+    this.score.loadData();
   }
 
   loadAudio() {
@@ -313,7 +302,7 @@ export class Spa {
       this.audioF.wrong.play();
     }
     if (this.pageSet.settings[2] === 1) {
-      window.navigator.vibrate([10, 500, 150]);
+      window.navigator.vibrate([10, 1000, 150]);
     }
   }
 
@@ -322,7 +311,7 @@ export class Spa {
       this.audioF.good.play();
     }
     if (this.pageSet.settings[2] === 1) {
-      window.navigator.vibrate([10, 500, 50]);
+      window.navigator.vibrate([10, 1000, 50]);
     }
   }
 }

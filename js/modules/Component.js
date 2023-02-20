@@ -40,6 +40,12 @@ export class Component {
     this.initDimensions();
   }
 
+  preloadSetPageData(callback) {
+    this.imageBackground = new Image();
+    this.imageBackground.src = '../../img/shared/background.png';
+    this.imageBackground.addEventListener('load', callback);
+  }
+
   initDimensions() {
     const sizes = {
       maxWidth: this.dimensions.max.width,

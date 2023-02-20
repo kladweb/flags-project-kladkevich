@@ -20,7 +20,7 @@ export class About extends Component {
     this.start();
     this.reRunAboutCont = this.reRunAbout.bind(this);
     window.addEventListener('resize', this.reRunAboutCont);
-    this.preloadStartData(() => {
+    this.preloadSetPageData(() => {
       this.loadAbout();
     });
   }
@@ -33,18 +33,11 @@ export class About extends Component {
     this.renderMessageBack();
   }
 
-  preloadStartData(callback) {
-    this.imageBackground = new Image();
-    this.imageBackground.src = `img/shared/background.png`;
-    this.imageBackground.addEventListener('load', callback);
-  }
-
   loadAbout() {
     this.renderBackground();
     this.setCursor();
     this.renderAbout();
     this.renderQuote();
-    console.log('СЛУШАТЕЛЬ !!!');
     this.addListenerForBack();
   }
 

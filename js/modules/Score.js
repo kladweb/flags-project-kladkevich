@@ -21,7 +21,7 @@ export class Score extends Component {
   }
 
   renderScore() {
-    this.preloadStartImage(() => {
+    this.preloadSetPageData(() => {
       this.createPageScore();
     });
   }
@@ -34,72 +34,9 @@ export class Score extends Component {
     this.renderMessageBack();
   }
 
-  sendHttpRequest(method, url, data) {
-    return fetch(url, {
-      method: method,
-      body: data
-    })
-    .then(response => {
-      return response.json();
-    })
-    .catch(error => {
-      console.log('err!!!', error);
-    });
-  }
-
-  async loadData() {
-    let fd = new FormData();
-    fd.append('f', 'READ');
-    fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
-    // fd.append('v', JSON.stringify({records: this.scList}));
-
-    const responseData = await this.sendHttpRequest(
-      'POST',
-      'https://fe.it-academy.by/AjaxStringStorage2.php',
-      fd
-    );
-    if (responseData) {
-      this.scList = JSON.parse(responseData.result);
-      return responseData;
-    } else {
-      this.scList = false;
-    }
-  }
-
-  async saveData() {
-    this.password = Math.random();
-    let fd = new FormData();
-    fd.append('f', 'LOCKGET');
-    fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
-    fd.append('p', this.password);
-    let resultInfo = await this.sendHttpRequest(
-      'POST',
-      'https://fe.it-academy.by/AjaxStringStorage2.php',
-      fd
-    );
-    console.log('resultInfo', resultInfo);
-    fd = new FormData();
-    fd.append('f', 'UPDATE');
-    fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
-    fd.append('v', JSON.stringify(this.scList));
-    fd.append('p', this.password);
-    let result = await this.sendHttpRequest(
-      'POST',
-      'https://fe.it-academy.by/AjaxStringStorage2.php',
-      fd
-    );
-    console.log('result', result, result);
-  }
-
-  preloadStartImage(callback) {
-    this.imageBackground = new Image();
-    this.imageBackground.src = `img/shared/background.png`;
-    this.imageBackground.addEventListener('load', callback);
-  }
-
   createPageScore() {
-    this.renderBackground();
     this.setCursor();
+    this.renderBackground();
     this.renderScorePage();
     this.addListenerScoreBack();
   }
@@ -135,7 +72,6 @@ export class Score extends Component {
       this.renderFail();
       this.renderMessageBack();
       this.addListenerScoreBack();
-      // return;
     }
     this.renderFrameScore();
     this.ctx.font = `${this.textScSize * 1.5}px ${this.font}`;
@@ -221,5 +157,62 @@ export class Score extends Component {
     setTimeout(() => {
       this.spa.switchToMainPage();
     }, 100);
+  }
+
+  sendHttpRequest(method, url, data) {
+    return fetch(url, {
+      method: method,
+      body: data
+    })
+    .then(response => {
+      return response.json();
+    })
+    .catch(error => {
+      console.log('err!!!', error);
+    });
+  }
+
+  async loadData() {
+    let fd = new FormData();
+    fd.append('f', 'READ');
+    fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
+    // fd.append('v', JSON.stringify({records: this.scList}));
+
+    const responseData = await this.sendHttpRequest(
+      'POST',
+      'https://fe.it-academy.by/AjaxStringStorage2.php',
+      fd
+    );
+    if (responseData) {
+      this.scList = JSON.parse(responseData.result);
+      return responseData;
+    } else {
+      this.scList = false;
+    }
+  }
+
+  async saveData() {
+    this.password = Math.random();
+    let fd = new FormData();
+    fd.append('f', 'LOCKGET');
+    fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
+    fd.append('p', this.password);
+    let resultInfo = await this.sendHttpRequest(
+      'POST',
+      'https://fe.it-academy.by/AjaxStringStorage2.php',
+      fd
+    );
+    console.log('resultInfo', resultInfo);
+    fd = new FormData();
+    fd.append('f', 'UPDATE');
+    fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
+    fd.append('v', JSON.stringify(this.scList));
+    fd.append('p', this.password);
+    let result = await this.sendHttpRequest(
+      'POST',
+      'https://fe.it-academy.by/AjaxStringStorage2.php',
+      fd
+    );
+    console.log('result', result, result);
   }
 }

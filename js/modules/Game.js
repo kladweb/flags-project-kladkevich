@@ -20,7 +20,7 @@ export class Game extends Component {
     this.boxFrameSize = 3.5  //толщина рамки вокруг варианта ответа
     this.boxOffsetX = [];  //координаты рамок с ответами
     this.boxOffsetY = [];
-    this.levelGame = 4;
+    this.nAnswers = 4; //количество вариантов ответов
     this.currentRender = [0, 0, 0];  //текущее состояние для resize
     this.liveDefault = 5; //начальное количество жизней
     this.score = 0; //текущее количество баллов
@@ -41,8 +41,20 @@ export class Game extends Component {
     this.score = 0;
     this.reRunGameCont = this.reRunGame.bind(this);
     window.addEventListener('resize', this.reRunGameCont);
-    this.loadFlags();
     this.start();
+    this.loadGame();
+  }
+
+  loadGame() {
+    this.preloadSetPageData(() => {
+      this.startFirstGame();
+    });
+  }
+
+  startFirstGame() {
+    this.renderBackground();
+    this.renderLoader();
+    this.loadFlags();
   }
 
   loadFlags() {
@@ -54,29 +66,11 @@ export class Game extends Component {
   getFlags(data) {
     this.flagsAll = data;
     Object.assign(this.unsolvedFlags, this.flagsAll);
-    this.loadGame();
+    this.loadImgData();
   }
 
   errorHandler(jqXHR, StatusStr, ErrorStr) {
     alert(StatusStr + ' ' + ErrorStr);
-  }
-
-  loadGame() {
-    this.preloadStartData(() => {
-      this.startFirstGame();
-    });
-  }
-
-  startFirstGame() {
-    this.renderBackground();
-    this.renderLoader();
-    this.loadImgData();
-  }
-
-  preloadStartData(callback) {
-    this.imageBackground = new Image();
-    this.imageBackground.src = `img/shared/background.png`;
-    this.imageBackground.addEventListener('load', callback);
   }
 
   loadImgData() {
@@ -272,9 +266,9 @@ export class Game extends Component {
     let randomVariants; //берем из оставшихся флагов, но в конце игры, когда флагов меньше, чем 4, берем из всех флагов
     //из строки выше у нас есть массив с одним правильным ответом. Дополним этот массив другими рандомными
     // вариантами ответов:
-    for (let i = 1; i < this.levelGame; i++) {
+    for (let i = 1; i < this.nAnswers; i++) {
       let remainsFlags = Object.keys(this.unsolvedFlags).length;
-      randomVariants = (remainsFlags > this.levelGame) ? this.unsolvedFlags : this.flagsAll;
+      randomVariants = (remainsFlags > this.nAnswers) ? this.unsolvedFlags : this.flagsAll;
       let randomNumberFlag = Math.floor(Math.random() * (Object.keys(randomVariants).length));
       let randomAnswer = Object.keys(randomVariants)[randomNumberFlag];
       if (this.answerOptions.indexOf(randomAnswer) === -1) {
@@ -309,7 +303,7 @@ export class Game extends Component {
   }
 
   renderAnswers() {
-    for (let i = 0; i < this.levelGame; i++) {
+    for (let i = 0; i < this.nAnswers; i++) {
       this.renderAnswer(i, this.colors.osloGray, this.colors.spicyMix, this.colors.gallery);
     }
   }
@@ -336,7 +330,6 @@ export class Game extends Component {
   }
 
   addListeners() {
-    // console.log('добавили слушатели');
     this.checkClickAnswerCont = this.checkClickAnswer.bind(this);
     this.checkMoveAnswerCont = this.checkMoveAnswer.bind(this);
     this.canvas.addEventListener('click', this.checkClickAnswerCont);
@@ -344,16 +337,14 @@ export class Game extends Component {
   }
 
   removeListeners() {
-    // console.log('удалили слушатели');
     this.canvas.removeEventListener('click', this.checkClickAnswerCont);
     this.canvas.removeEventListener('mousemove', this.checkMoveAnswerCont);
   }
 
   checkClickAnswer(e) {
     let zoom = this.calcZoom();
-    for (let j = 0; j < this.levelGame; j++) {
+    for (let j = 0; j < this.nAnswers; j++) {
       if (this.checkBorders(e, zoom, j)) {
-        console.log('Variant', j, 'click');
         this.showResult(j);
       }
     }
@@ -361,7 +352,7 @@ export class Game extends Component {
 
   checkMoveAnswer(e) {
     let zoom = this.calcZoom();
-    for (let i = 0; i < this.levelGame; i++) {
+    for (let i = 0; i < this.nAnswers; i++) {
       if (this.checkBorders(e, zoom, i)) {
         if (this.activeAnswer[i] !== 1) {
           e.target.style.cursor = 'url(../img/cursors/earth-pointer.png), pointer';

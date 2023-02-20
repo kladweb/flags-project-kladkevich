@@ -27,12 +27,6 @@ export class SettingsPage extends Component {
     })
   }
 
-  preloadSetPageData(callback) {
-    this.imageBackground = new Image();
-    this.imageBackground.src = `../../img/shared/background.png`;
-    this.imageBackground.addEventListener('load', callback);
-  }
-
   loadSet() {
     this.renderBackground();
     this.loadCheckedImg();

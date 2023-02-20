@@ -20,15 +20,9 @@ export class MainMenu extends Component {
     this.start();
     this.reRunMenuCont = this.reRunMenu.bind(this);
     window.addEventListener('resize', this.reRunMenuCont);
-    this.preloadStartData(() => {
+    this.preloadSetPageData(() => {
       this.loadMenuData();
     });
-  }
-
-  preloadStartData(callback) {
-    this.imageBackground = new Image();
-    this.imageBackground.src = `img/shared/background.png`;
-    this.imageBackground.addEventListener('load', callback);
   }
 
   loadMenuData() {
@@ -220,7 +214,6 @@ export class MainMenu extends Component {
     let zoom = this.calcZoom();
     for (let j = 0; j <= 3; j++) {
       if (this.checkBorders(e, zoom, j)) {
-        console.log('Variant', j, 'click');
         this.showResult(j);
       }
     }
@@ -265,7 +258,6 @@ export class MainMenu extends Component {
 
   showResult(num) {
     this.spa.playClick();
-    // this.removeListeners();
     if (num === 0) {
       this.spa.switchToGamePage();
     }
