@@ -321,7 +321,7 @@ export class Game extends Component {
     window.requestAnimationFrame(() => {
       this.ctx.fillStyle = colorText;
       this.ctx.textAlign = 'center';
-      const answerSize = this.boxWidth / 14;
+      const answerSize = this.boxWidth / 12;
       this.ctx.font = `${answerSize}px ${this.font}`;
       let currentTextX = this.boxOffsetX[num] + this.boxWidth / 2;
       let currentTextY = this.boxOffsetY[num] + this.boxHeight / 2;
