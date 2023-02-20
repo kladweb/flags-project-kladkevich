@@ -236,8 +236,8 @@ export class Game extends Component {
             clearTimeout(timerFlag);
             this.ctx.globalAlpha = 1;
           }
-        }, 100);
-      }, 150);
+        }, 50);
+      }, 100);
     } else {
       window.requestAnimationFrame(() => {
         this.ctx.globalAlpha = 1;
