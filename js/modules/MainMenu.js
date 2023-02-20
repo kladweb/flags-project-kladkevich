@@ -18,8 +18,6 @@ export class MainMenu extends Component {
 
   initMenu() {
     this.start();
-    this.reRunMenuCont = this.reRunMenu.bind(this);
-    window.addEventListener('resize', this.reRunMenuCont);
     this.preloadSetPageData(() => {
       this.loadMenuData();
     });
@@ -55,6 +53,8 @@ export class MainMenu extends Component {
   }
 
   runMenu() {
+    this.reRunMenuCont = this.reRunMenu.bind(this);
+    window.addEventListener('resize', this.reRunMenuCont);
     this.createMenuSizes();
     this.addListeners();
     this.renderMenu();

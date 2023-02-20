@@ -76,6 +76,7 @@ export class Spa {
       this.main.initMenu();
     } else {
       this.main.runMenu();
+      this.main.reRunMenu();
     }
     if (this.game) {
       this.game.removeListeners();
@@ -101,11 +102,6 @@ export class Spa {
       this.game = new Game(this);
     }
     this.game.initGame();
-    // if (!this.score) {
-    //   // this.score = new Score(this);
-    //   // this.score.start();
-    // }
-    // this.score.loadData();
     if (this.main) {
       this.main.removeListeners();
     }
@@ -152,9 +148,6 @@ export class Spa {
     if (this.pageSet) {
       this.pageSet.removeListeners();
     }
-    // if (!this.score) {
-    //   this.score = new Score(this);
-    // }
     this.score.loadData().then(() => {
       this.score.initScore();
     });
