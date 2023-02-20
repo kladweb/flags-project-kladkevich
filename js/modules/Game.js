@@ -112,7 +112,6 @@ export class Game extends Component {
   }
 
   startGame() {
-    console.log('startGame');
     this.currentRender = [0, 0, 0];
     this.setCursor();
     this.getRandomFlag();
@@ -275,10 +274,7 @@ export class Game extends Component {
     // вариантами ответов:
     for (let i = 1; i < this.levelGame; i++) {
       let remainsFlags = Object.keys(this.unsolvedFlags).length;
-      console.log(remainsFlags);
       randomVariants = (remainsFlags > this.levelGame) ? this.unsolvedFlags : this.flagsAll;
-      console.log('randomVariants -', Object.keys(randomVariants).length);
-      console.log('randomVariants -', Object.keys(this.flagsAll).length);
       let randomNumberFlag = Math.floor(Math.random() * (Object.keys(randomVariants).length));
       let randomAnswer = Object.keys(randomVariants)[randomNumberFlag];
       if (this.answerOptions.indexOf(randomAnswer) === -1) {
@@ -634,7 +630,6 @@ export class Game extends Component {
   }
 
   startNextRound() {
-    console.log('отсюда: startNextRound');
     this.startGame();
   }
 

@@ -74,6 +74,10 @@ export class Spa {
   }
 
   startMainMenu() {
+    if (!this.main) {
+      this.main = new MainMenu(this);
+    }
+    this.main.initMenu();
     if (this.game) {
       this.game.removeListeners();
       this.game.removeFinishListeners();
@@ -93,10 +97,6 @@ export class Spa {
       window.removeEventListener('beforeunload', this.warnUser);
       window.removeEventListener('popstate', this.askToBack);
     }
-    if (!this.main) {
-      this.main = new MainMenu(this);
-    }
-    this.main.initMenu();
   }
 
   startGamePage() {
@@ -120,11 +120,6 @@ export class Spa {
     }
     window.addEventListener('beforeunload', this.warnUser);
     window.addEventListener('popstate', this.askToBack);
-
-    // window.onbeforeunload = function () {
-    //   return "You have made changes. They will be lost if you continue.";
-    // }
-    // self.allowPrompt = true;
   }
 
   warnUser(e) {
@@ -318,7 +313,7 @@ export class Spa {
       this.audioF.wrong.play();
     }
     if (this.pageSet.settings[2] === 1) {
-      window.navigator.vibrate([50, 100, 150]);
+      window.navigator.vibrate([10, 500, 150]);
     }
   }
 
@@ -327,7 +322,7 @@ export class Spa {
       this.audioF.good.play();
     }
     if (this.pageSet.settings[2] === 1) {
-      window.navigator.vibrate([50, 100, 50]);
+      window.navigator.vibrate([10, 500, 50]);
     }
   }
 }

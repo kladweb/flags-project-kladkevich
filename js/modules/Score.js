@@ -55,7 +55,7 @@ export class Score extends Component {
 
     const responseData = await this.sendHttpRequest(
       'POST',
-      'http://fe.it-academy.by/AjaxStringStorage2.php',
+      'https://fe.it-academy.by/AjaxStringStorage2.php',
       fd
     );
     if (responseData) {
@@ -72,22 +72,23 @@ export class Score extends Component {
     fd.append('f', 'LOCKGET');
     fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
     fd.append('p', this.password);
-    let result = await this.sendHttpRequest(
+    let resultInfo = await this.sendHttpRequest(
       'POST',
-      'http://fe.it-academy.by/AjaxStringStorage2.php',
+      'https://fe.it-academy.by/AjaxStringStorage2.php',
       fd
     );
-
+    console.log('resultInfo', resultInfo);
     fd = new FormData();
     fd.append('f', 'UPDATE');
     fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
     fd.append('v', JSON.stringify(this.scList));
     fd.append('p', this.password);
-    result = await this.sendHttpRequest(
+    let result = await this.sendHttpRequest(
       'POST',
-      'http://fe.it-academy.by/AjaxStringStorage2.php',
+      'https://fe.it-academy.by/AjaxStringStorage2.php',
       fd
     );
+    console.log('result', result, result);
   }
 
   preloadStartImage(callback) {
@@ -132,6 +133,8 @@ export class Score extends Component {
     this.frCurrX = (this.width - this.fieldWidth) / 2;
     if (this.scList === false) {
       this.renderFail();
+      this.renderMessageBack();
+      this.addListenerScoreBack();
       // return;
     }
     this.renderFrameScore();
