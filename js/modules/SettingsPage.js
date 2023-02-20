@@ -120,8 +120,11 @@ export class SettingsPage extends Component {
 
   showResult(num) {
     this.settings[num] = (this.settings[num] === 1) ? 0 : 1;
-    if (this.settings[1] === 1) {
-      this.spa.playClick();
+    if (num === 1 && this.settings[1] === 1) {
+      this.spa.playClick(num);
+    }
+    if (num === 2 && this.settings[2] === 1) {
+      this.spa.playClick(num);
     }
     this.spa.saveSettings();
     this.renderBackground();

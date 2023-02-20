@@ -281,11 +281,11 @@ export class Spa {
     }
   }
 
-  playClick() {
-    if (this.pageSet.settings[1] === 1) {
+  playClick(n = 0) {
+    if (this.pageSet.settings[1] === 1 && n !== 2) {
       this.audioF.click.play();
     }
-    if (this.pageSet.settings[2] === 1) {
+    if (this.pageSet.settings[2] === 1 && n !== 1) {
       window.navigator.vibrate(10);
     }
   }
