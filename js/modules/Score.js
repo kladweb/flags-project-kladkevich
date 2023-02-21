@@ -41,7 +41,7 @@ export class Score extends Component {
   }
 
   preloadAjaxStorageData() {
-    const encData = this.spa.storage.loadData()
+    this.spa.storage.loadData()
     .then((encData) => {
       if (encData) {
         this.scList = JSON.parse(encData.result);
@@ -167,7 +167,7 @@ export class Score extends Component {
   }
 
   checkScoreToBack() {
-    this.spa.playClick();
+    this.spa.media.playClick();
     this.canvas.removeEventListener('click', this.checkScoreToBackCont);
     setTimeout(() => {
       this.spa.switchToMainPage();

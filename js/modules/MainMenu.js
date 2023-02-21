@@ -254,7 +254,7 @@ export class MainMenu extends Component {
   }
 
   showResult(num) {
-    this.spa.playClick();
+    this.spa.media.playClick();
     if (num === 0) {
       this.spa.switchToGamePage();
     }

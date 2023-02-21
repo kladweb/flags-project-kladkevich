@@ -114,7 +114,7 @@ export class Game extends Component {
   }
 
   runGame() {
-    this.spa.playMelody();
+    this.spa.media.playMelody();
     this.createGameSizes();
     this.renderBackground();
     this.renderFrame();
@@ -126,6 +126,7 @@ export class Game extends Component {
     this.addListeners();
   }
 
+  //для перерисовки при 'resize'
   reRunGame() {
     switch (this.currentRender[0]) {
       case 0:
@@ -223,14 +224,20 @@ export class Game extends Component {
   renderFlag() {
     let aspectRatioFlag = this.activeImgFlag.width / this.activeImgFlag.height;
     let imageWidth = this.flagHeight * aspectRatioFlag;
+    let imageHeight = this.flagHeight;
+    if (imageWidth > this.flagWidth) {
+      imageWidth = this.flagWidth;
+      imageHeight = imageWidth / aspectRatioFlag;
+    }
     let imageX = this.flagOffsetX + (this.flagWidth - imageWidth) / 2;
+    let imageY = this.flagOffsetY + (this.flagHeight - imageHeight) / 2;
     if (this.currentRender[0] === -1) {
       let j = 0;
       //анимация для плавного появления флага
       setTimeout(() => {
         let timerFlag = setInterval(() => {
           this.ctx.globalAlpha = j;
-          this.ctx.drawImage(this.activeImgFlag, imageX, this.flagOffsetY, imageWidth, this.flagHeight);
+          this.ctx.drawImage(this.activeImgFlag, imageX, imageY, imageWidth, imageHeight);
           j += 0.05;
           if (j > 1) {
             clearTimeout(timerFlag);
@@ -241,7 +248,7 @@ export class Game extends Component {
     } else {
       window.requestAnimationFrame(() => {
         this.ctx.globalAlpha = 1;
-        this.ctx.drawImage(this.activeImgFlag, imageX, this.flagOffsetY, imageWidth, this.flagHeight);
+        this.ctx.drawImage(this.activeImgFlag, imageX, imageY, imageWidth, imageHeight);
       });
     }
     this.currentRender[0] = 0;
@@ -407,10 +414,10 @@ export class Game extends Component {
     let colorFrame;
     if (this.checkAnswer(num)) {
       colorFrame = this.colors.green;
-      this.spa.playGood();
+      this.spa.media.playGood();
     } else {
       colorFrame = this.colors.shiraz;
-      this.spa.playWrong();
+      this.spa.media.playWrong();
     }
     this.renderResultWhite(num, colorFrame);
   }
@@ -511,11 +518,11 @@ export class Game extends Component {
   renderArrowRight2(num, XCurr, YCurr) {
     let XStart = XCurr;
     let XEnd = this.boxOffsetX[num] + this.boxWidth / 2 + this.boxHeight / 3;
-    let XInterval = (XEnd - XStart) / 5;
+    let XInterval = (XEnd - XStart) / 4;
     let XCurrent = XStart;
     let YStart = YCurr;
     let YEnd = this.boxOffsetY[num] + this.boxHeight / 4 - this.boxFrameSize;
-    let YInterval = (YEnd - YStart) / 5;
+    let YInterval = (YEnd - YStart) / 4;
     let YCurrent = YStart;
     if (this.currentRender[0] === 2) {
       window.requestAnimationFrame(() => {
@@ -539,7 +546,7 @@ export class Game extends Component {
           this.currentRender = [2, num, this.colors.green];
           this.continueGame();
         }
-      }, 30);
+      }, 40);
     }
   }
 
@@ -763,7 +770,7 @@ export class Game extends Component {
   }
 
   resultFinish(num) {
-    this.spa.playClick();
+    this.spa.media.playClick();
     this.removeFinishListeners();
     if (num === 0) {
       this.initGame();

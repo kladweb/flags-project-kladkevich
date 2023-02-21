@@ -4,22 +4,16 @@ export class SettingsPage extends Component {
   constructor(spa) {
     super();
     this.spa = spa;
-    // this.isMobile = true;  //является ли устройство мобильным (для включения возможностей вибро);
     this.checkedImg = [];  //массив с двумя 'png' чередующимися картинками (с галочкой и без галочки);
     this.imgSet = {
       checked: null,
       unchecked: null,
       button: null
     };
-    this.settings = [1, 1, 1];  //загружаются из localStorage
-    // this.settings[0] = 1; //музыка включена
-    // this.settings[1] = 1; //звуки включены
-    // this.settings[2] = 1; //вибрация включена
   }
 
   initPageSet() {
-    this.isMobile = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent);
-    this.spa.playMelody();
+    this.spa.media.playMelody();
     this.start();
     this.setCursor();
     this.preloadSetPageData(() => {
@@ -86,7 +80,7 @@ export class SettingsPage extends Component {
   checkClickCheck(e) {
     let zoom = this.calcZoom();
 
-    for (let j = 0; j < 2 + this.isMobile; j++) {
+    for (let j = 0; j < 2 + this.spa.media.isMobile; j++) {
       if (this.checkBorders(e, zoom, j)) {
         this.showResult(j);
       }
@@ -119,14 +113,15 @@ export class SettingsPage extends Component {
   }
 
   showResult(num) {
-    this.settings[num] = (this.settings[num] === 1) ? 0 : 1;
-    if (num === 1 && this.settings[1] === 1) {
-      this.spa.playClick(num);
+    this.spa.media.setMedia = (this.spa.media.settingsMedia[num] === 1) ? [num, 0] : [num, 1];
+    // this.spa.media.settingsMedia[num] = (this.spa.media.settingsMedia[num] === 1) ? 0 : 1;
+    if (num === 1 && this.spa.media.settingsMedia[1] === 1) {
+      this.spa.media.playClick(num);
     }
-    if (num === 2 && this.settings[2] === 1) {
-      this.spa.playClick(num);
+    if (num === 2 && this.spa.media.settingsMedia[2] === 1) {
+      this.spa.media.playClick(num);
     }
-    this.spa.saveSettings();
+    this.spa.media.saveSettings();
     this.renderBackground();
     this.renderSetPage();
   }
@@ -167,12 +162,12 @@ export class SettingsPage extends Component {
     Al = 'left';
     let currYText = this.Y[0] + this.checkSize / 1.5;
     this.renderSetText(text1, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
-    this.renderChecked(this.checkedImg[this.settings[0]], this.X2, this.Y[0]);
+    this.renderChecked(this.checkedImg[this.spa.media.settingsMedia[0]], this.X2, this.Y[0]);
     this.Y[1] = this.Y[0] + this.textSetSize * 5;
     let text2 = 'SOUNDS';
     currYText = this.Y[1] + this.checkSize / 1.5;
     this.renderSetText(text2, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
-    this.renderChecked(this.checkedImg[this.settings[1]], this.X2, this.Y[1]);
+    this.renderChecked(this.checkedImg[this.spa.media.settingsMedia[1]], this.X2, this.Y[1]);
     this.Y[2] = this.Y[1] + this.textSetSize * 5;
     let text3 = 'VIBRATION';
     let text4 = '(only for phones)';
@@ -180,8 +175,8 @@ export class SettingsPage extends Component {
     this.renderSetText(text3, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
     currYText += this.textSetSize * 1.5;
     this.renderSetText(text4, this.X1, currYText, this.textSetSize, this.colors.osloGrayL, Al);
-    let Alpha = (this.isMobile) ? 1 : 0.2;
-    this.renderChecked(this.checkedImg[this.settings[2]], this.X2, this.Y[2], Alpha);
+    let Alpha = (this.spa.media.isMobile) ? 1 : 0.2;
+    this.renderChecked(this.checkedImg[this.spa.media.settingsMedia[2]], this.X2, this.Y[2], Alpha);
     this.butY = this.height - this.textSetSize * 5;
     let aspectRatioButton = this.imgSet.button.width / this.imgSet.button.height;
     this.buttonHeight = this.checkSize;
@@ -221,7 +216,8 @@ export class SettingsPage extends Component {
   }
 
   returnMenu() {
-    this.spa.playClick();
+    this.spa.media.playClick();
+    this.spa.media.saveSettings();
     this.removeListeners();
     this.spa.switchToMainPage();
   }

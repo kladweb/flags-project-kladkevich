@@ -1,6 +1,7 @@
 import {SettingsPage} from "./SettingsPage.js";
 import {Score} from './Score.js';
 import {AjaxStringStorage} from './AjaxStringStorage.js';
+import {Multimedia} from "./Multimedia.js";
 import {MainMenu} from './MainMenu.js';
 import {Game} from './Game.js';
 import {About} from './About.js';
@@ -8,16 +9,20 @@ import {About} from './About.js';
 export class Spa {
   constructor() {
     this.SPAStateH = null; //текущее состояние приложения
-    this.main = null;
-    this.audioF = {
-      melody: null,
-      good: null,
-      wrong: null,
-      click: null
-    }
-    this.storageName = 'settFlagGame';
     window.addEventListener('hashchange', this.switchToStateFromURLHash);
     self = this;
+  }
+
+  initApp() {
+    this.pageSet = new SettingsPage(this);
+    this.pageSet.init();
+    this.score = new Score(this);
+    this.score.start();
+    this.storage = new AjaxStringStorage();
+    this.media = new Multimedia();
+    this.media.initMedia();
+    this.media.loadSettings();
+    this.switchToStateFromURLHash();
   }
 
   switchToStateFromURLHash() {
@@ -174,7 +179,7 @@ export class Spa {
   }
 
   checkResult() {
-    const encData = this.storage.loadData()
+    this.storage.loadData()
     .then((encData) => {
       if (encData) {
         this.score.scList = JSON.parse(encData.result);
@@ -237,81 +242,5 @@ export class Spa {
     .split('"').join("&quot;")
     .split("'").join("&#039;");
     return text;
-  }
-
-  initApp() {
-    this.pageSet = new SettingsPage(this);
-    this.pageSet.init();
-    this.loadSettings();
-    this.loadAudio();
-    this.score = new Score(this);
-    this.score.start();
-    this.storage = new AjaxStringStorage();
-
-  }
-
-  loadAudio() {
-    for (let key in this.audioF) {
-      this.audioF[key] = new Audio(`../../sounds/${key}.mp3`);
-    }
-    this.audioF.melody.volume = 0.5;
-    this.audioF.melody.loop = true;
-    document.addEventListener('click', () => {
-      this.playMelody();
-    });
-  }
-
-  loadSettings() {
-    this.pageSet.isMobile = (/iPhone|iPod|iPad|Android|BlackBerry/).test(navigator.userAgent);
-    let storageLocalString = window.localStorage.getItem(this.storageName);
-    if (storageLocalString) {
-      this.pageSet.settings = JSON.parse(storageLocalString);
-    } else {
-      this.pageSet.settings = [1, 1, 1];
-    }
-    if (!this.pageSet.isMobile) {
-      this.pageSet.settings[2] = 0;
-      this.saveSettings();
-    }
-  }
-
-  saveSettings() {
-    window.localStorage.setItem(this.storageName, JSON.stringify(this.pageSet.settings));
-  }
-
-  playMelody() {
-    if (this.pageSet.settings[0] === 1) {
-      this.audioF.melody.play();
-    }
-    if (this.pageSet.settings[0] === 0) {
-      this.audioF.melody.pause();
-    }
-  }
-
-  playClick(n = 0) {
-    if (this.pageSet.settings[1] === 1 && n !== 2) {
-      this.audioF.click.play();
-    }
-    if (this.pageSet.settings[2] === 1 && n !== 1) {
-      window.navigator.vibrate(10);
-    }
-  }
-
-  playWrong() {
-    if (this.pageSet.settings[1] === 1) {
-      this.audioF.wrong.play();
-    }
-    if (this.pageSet.settings[2] === 1) {
-      window.navigator.vibrate([10, 1000, 150]);
-    }
-  }
-
-  playGood() {
-    if (this.pageSet.settings[1] === 1) {
-      this.audioF.good.play();
-    }
-    if (this.pageSet.settings[2] === 1) {
-      window.navigator.vibrate([10, 1000, 10, 50, 10, 50, 10]);
-    }
   }
 }

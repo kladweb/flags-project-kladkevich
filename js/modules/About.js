@@ -152,7 +152,7 @@ export class About extends Component {
   }
 
   checkBack() {
-    this.spa.playClick();
+    this.spa.media.playClick();
     this.canvas.removeEventListener('click', this.checkBackCont);
     setTimeout(() => {
       this.spa.switchToMainPage();
