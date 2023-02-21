@@ -87,9 +87,8 @@ export class MainMenu extends Component {
     let aspectRatioWindow = window.innerWidth / window.innerHeight;
     let aspectRatioLogo = this.imgM.logo.width / this.imgM.logo.height;
     let aspectRatioButton = this.imgM.button.width / this.imgM.button.height;
-    if (aspectRatioWindow <= 0.5) {
-      console.log('|', aspectRatioWindow);
-      this.logoWidth = this.width * 0.6;
+    if (aspectRatioWindow <= 0.6) {
+      this.logoWidth = this.width * 0.55;
       this.logoHeight = this.logoWidth / aspectRatioLogo;
       this.logoOffsetY = (this.height - this.logoHeight * 2) / 2;
       this.logoOffsetX = (this.width - this.logoWidth) / 2;
@@ -107,7 +106,7 @@ export class MainMenu extends Component {
         this.butOffsetY[i] = this.logoOffsetY + this.logoHeight + this.butHeight * 0.5 + this.butHeight * 1.25 * i;
       }
     }
-    if (aspectRatioWindow > 0.5 && aspectRatioWindow <= 1.5) {
+    if (aspectRatioWindow > 0.6 && aspectRatioWindow <= 1.5) {
       this.logoWidth = this.width * 0.5 / ((aspectRatioWindow < 1) ? 1 : aspectRatioWindow);
       this.logoHeight = this.logoWidth / aspectRatioLogo;
       this.logoOffsetY = (this.height - this.logoHeight * 1.5) / 2;
@@ -169,7 +168,6 @@ export class MainMenu extends Component {
   }
 
   renderMenuButtons() {
-    console.log('draw but');
     window.requestAnimationFrame(() => {
       for (let i = 0; i <= 3; i++) {
         this.ctx.globalAlpha = 0.75;

@@ -1,8 +1,9 @@
+import {SettingsPage} from "./SettingsPage.js";
+import {Score} from './Score.js';
+import {AjaxStringStorage} from './AjaxStringStorage.js';
 import {MainMenu} from './MainMenu.js';
 import {Game} from './Game.js';
-import {Score} from './Score.js';
 import {About} from './About.js';
-import {SettingsPage} from "./SettingsPage.js";
 
 export class Spa {
   constructor() {
@@ -119,9 +120,7 @@ export class Spa {
     if (this.pageSet) {
       this.pageSet.removeListeners();
     }
-    this.score.loadData().then(() => {
-      this.score.initScore();
-    });
+    this.score.initScore();
   }
 
   startSettingsPage() {
@@ -175,7 +174,14 @@ export class Spa {
   }
 
   checkResult() {
-    this.score.loadData()
+    const encData = this.storage.loadData()
+    .then((encData) => {
+      if (encData) {
+        this.score.scList = JSON.parse(encData.result);
+      } else {
+        this.score.scList = false;
+      }
+    })
     .then(() => {
       this.checkScore();
     });
@@ -210,7 +216,7 @@ export class Spa {
           return 1;
         }
       });
-      this.score.saveData();
+      this.storage.saveData(this.score.scList);
     }
   }
 
@@ -240,7 +246,8 @@ export class Spa {
     this.loadAudio();
     this.score = new Score(this);
     this.score.start();
-    this.score.loadData();
+    this.storage = new AjaxStringStorage();
+
   }
 
   loadAudio() {

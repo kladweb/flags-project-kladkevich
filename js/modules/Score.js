@@ -10,7 +10,6 @@ export class Score extends Component {
     this.textScore[1] = 'NAME';
     this.textScore[2] = 'SCORE';
     this.textScore[3] = 'GAME DATE';
-    this.password = null;
   }
 
   initScore() {
@@ -37,8 +36,24 @@ export class Score extends Component {
   createPageScore() {
     this.setCursor();
     this.renderBackground();
-    this.renderScorePage();
-    this.addListenerScoreBack();
+    this.renderLoader();
+    this.preloadAjaxStorageData();
+  }
+
+  preloadAjaxStorageData() {
+    const encData = this.spa.storage.loadData()
+    .then((encData) => {
+      if (encData) {
+        this.scList = JSON.parse(encData.result);
+      } else {
+        this.scList = false;
+      }
+    })
+    .then(() => {
+      this.renderBackground();
+      this.renderScorePage();
+      this.addListenerScoreBack();
+    });
   }
 
   renderScorePage() {
@@ -137,8 +152,8 @@ export class Score extends Component {
 
   addListenerScoreBack() {
     this.renderMessageBack();
-    this.checkScoreBackCont = this.checkScoreBack.bind(this);
-    this.canvas.addEventListener('click', this.checkScoreBackCont);
+    this.checkScoreToBackCont = this.checkScoreToBack.bind(this);
+    this.canvas.addEventListener('click', this.checkScoreToBackCont);
   }
 
   renderMessageBack() {
@@ -151,68 +166,11 @@ export class Score extends Component {
     this.renderScText(textBack, currentTextX, currentTextY, this.aboutSize * 1.5, color, 'center');
   }
 
-  checkScoreBack() {
+  checkScoreToBack() {
     this.spa.playClick();
-    this.canvas.removeEventListener('click', this.checkScoreBackCont);
+    this.canvas.removeEventListener('click', this.checkScoreToBackCont);
     setTimeout(() => {
       this.spa.switchToMainPage();
     }, 100);
-  }
-
-  sendHttpRequest(method, url, data) {
-    return fetch(url, {
-      method: method,
-      body: data
-    })
-    .then(response => {
-      return response.json();
-    })
-    .catch(error => {
-      console.log('err!!!', error);
-    });
-  }
-
-  async loadData() {
-    let fd = new FormData();
-    fd.append('f', 'READ');
-    fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
-    // fd.append('v', JSON.stringify({records: this.scList}));
-
-    const responseData = await this.sendHttpRequest(
-      'POST',
-      'https://fe.it-academy.by/AjaxStringStorage2.php',
-      fd
-    );
-    if (responseData) {
-      this.scList = JSON.parse(responseData.result);
-      return responseData;
-    } else {
-      this.scList = false;
-    }
-  }
-
-  async saveData() {
-    this.password = Math.random();
-    let fd = new FormData();
-    fd.append('f', 'LOCKGET');
-    fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
-    fd.append('p', this.password);
-    let resultInfo = await this.sendHttpRequest(
-      'POST',
-      'https://fe.it-academy.by/AjaxStringStorage2.php',
-      fd
-    );
-    console.log('resultInfo', resultInfo);
-    fd = new FormData();
-    fd.append('f', 'UPDATE');
-    fd.append('n', 'KLADKEVICH_STORAGE_FLAG');
-    fd.append('v', JSON.stringify(this.scList));
-    fd.append('p', this.password);
-    let result = await this.sendHttpRequest(
-      'POST',
-      'https://fe.it-academy.by/AjaxStringStorage2.php',
-      fd
-    );
-    console.log('result', result, result);
   }
 }
