@@ -138,7 +138,6 @@ export class Game extends Component {
         this.renderAnswers();
         break;
       case 1:
-        this.canvas.removeEventListener('click', this.checkContinueCont);
         this.initDimensions();
         this.createGameSizes();
         this.renderBackground();
@@ -148,12 +147,12 @@ export class Game extends Component {
         this.renderLive();
         this.createAnswers();
         this.renderAnswers();
-        this.renderArrowWrong(this.currentRender[1]);
         this.reRenderResultColor(this.currentRender[1], this.currentRender[2]);
+        this.currentRender[0] = 1;
+        this.renderArrowWrong(this.currentRender[1]);
         this.renderMessageContinue();
         break;
       case 2:
-        this.canvas.removeEventListener('click', this.checkContinueCont);
         this.initDimensions();
         this.createGameSizes();
         this.renderBackground();
@@ -163,9 +162,10 @@ export class Game extends Component {
         this.renderLive();
         this.createAnswers();
         this.renderAnswers();
+        this.reRenderResultColor(this.currentRender[1], this.currentRender[2]);
+        this.currentRender[0] = 2;
         this.renderArrowRight1(this.currentRender[1]);
         this.renderArrowRight2(this.currentRender[1]);
-        this.reRenderResultColor(this.currentRender[1], this.currentRender[2]);
         this.renderMessageContinue();
         break;
       case 3:
@@ -594,7 +594,6 @@ export class Game extends Component {
         XCurrent[1] = XCurrent[1] + XInterval;
         YCurrent[0] = YCurrent[0] - YInterval;
         YCurrent[1] = YCurrent[1] + YInterval;
-        // console.log(YCurrent[1], YEnd[1]);
         if (YCurrent[1] >= YEnd[1]) {
           clearTimeout(timerArrow3);
           this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
