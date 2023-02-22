@@ -138,6 +138,7 @@ export class Game extends Component {
         this.renderAnswers();
         break;
       case 1:
+        this.canvas.removeEventListener('click', this.checkContinueCont);
         this.initDimensions();
         this.createGameSizes();
         this.renderBackground();
@@ -152,6 +153,7 @@ export class Game extends Component {
         this.renderMessageContinue();
         break;
       case 2:
+        this.canvas.removeEventListener('click', this.checkContinueCont);
         this.initDimensions();
         this.createGameSizes();
         this.renderBackground();
