@@ -25,6 +25,7 @@ export class About extends Component {
     });
   }
 
+  //для слушателя 'resize':
   reRunAbout() {
     this.initDimensions();
     this.renderBackground();
@@ -40,7 +41,6 @@ export class About extends Component {
     this.renderQuote();
     this.addListenerForBack();
   }
-
 
   renderAbout() {
     let marginLeft;

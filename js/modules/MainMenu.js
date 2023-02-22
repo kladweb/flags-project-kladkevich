@@ -9,11 +9,8 @@ export class MainMenu extends Component {
     this.butWidth = 0; //размеры кнопок главного меню
     this.butHeight = 0;
     this.butNames = ['PLAY', 'HI SCORES', 'SETTINGS', 'ABOUT GAME'];
-    this.imgM = {
-      logo: null,
-      button: null
-    };
-    this.activeButton = [0, 0, 0, 0];
+    this.imgM = {logo: null, button: null};
+    this.activeButton = [0, 0, 0, 0];  //какая кнопка активна
   }
 
   initMenu() {
@@ -47,7 +44,7 @@ export class MainMenu extends Component {
   preloadImages(onAssetLoadCallback) {
     for (let key in this.imgM) {
       this.imgM[key] = new Image();
-      this.imgM[key].src = 'img/shared/' + key + '.png';
+      this.imgM[key].src = `img/shared/${key}.png`;
       this.imgM[key].addEventListener('load', onAssetLoadCallback);
     }
   }
@@ -255,17 +252,19 @@ export class MainMenu extends Component {
 
   showResult(num) {
     this.spa.media.playClick();
-    if (num === 0) {
-      this.spa.switchToGamePage();
-    }
-    if (num === 1) {
-      this.spa.switchToHiScorePage();
-    }
-    if (num === 2) {
-      this.spa.switchSettingsPage();
-    }
-    if (num === 3) {
-      this.spa.switchAboutPage();
+    switch (num) {
+      case 0:
+        this.spa.switchToGamePage();
+        break;
+      case 1:
+        this.spa.switchToHiScorePage();
+        break;
+      case 2:
+        this.spa.switchSettingsPage();
+        break;
+      case 3:
+        this.spa.switchAboutPage();
+        break;
     }
   }
 }

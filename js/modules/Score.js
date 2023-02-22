@@ -5,11 +5,7 @@ export class Score extends Component {
     super();
     this.spa = spa;
     this.scList = null; //массив со списком рекордов;
-    this.textScore = [];
-    this.textScore[0] = 'THE BEST PLAYERS';
-    this.textScore[1] = 'NAME';
-    this.textScore[2] = 'SCORE';
-    this.textScore[3] = 'GAME DATE';
+    this.textScore = ['THE BEST PLAYERS', 'NAME', 'SCORE', 'GAME DATE'];
   }
 
   initScore() {

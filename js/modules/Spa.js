@@ -137,6 +137,10 @@ export class Spa {
   }
 
   startAboutPage() {
+    if (!this.about) {
+      this.about = new About(this);
+    }
+    this.about.initAbout();
     if (this.game) {
       this.game.removeListeners();
     }
@@ -144,10 +148,6 @@ export class Spa {
       this.main.removeListeners();
       window.removeEventListener('resize', this.main.reRunMenuCont);
     }
-    if (!this.about) {
-      this.about = new About(this);
-    }
-    this.about.initAbout();
   }
 
   warnUser(e) {
@@ -236,11 +236,11 @@ export class Spa {
     if (!text)
       return text;
     text = text.toString()
-    .split("&").join("&amp;")
-    .split("<").join("&lt;")
-    .split(">").join("&gt;")
-    .split('"').join("&quot;")
-    .split("'").join("&#039;");
+    .split('&').join('&amp;')
+    .split('<').join('&lt;')
+    .split('>').join('&gt;')
+    .split('"').join('&quot;')
+    .split("'").join('&#039;');
     return text;
   }
 }

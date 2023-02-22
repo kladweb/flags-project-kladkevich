@@ -7,11 +7,11 @@ export class Multimedia {
       click: null
     }
     this.storageName = 'settFlagGame';
-    this.settingsMedia = [1, 1, 1];  //загружаются из localStorage
+    this.settingsMedia = [1, 1, 1];  //загружаются и сохраняются в localStorage
     // this.settingsMedia[0] = 1; //музыка включена  0 - музыка выключена (значение параметра);
     // this.settingsMedia[1] = 1; //звуки включены
     // this.settingsMedia[2] = 1; //вибрация включена
-    // this.isMobile = true;  //является ли устройство мобильным (для включения возможностей вибро);
+    // this.isMobile;  //является ли устройство мобильным (для включения возможностей вибро);
   }
 
   set setMedia(value) {

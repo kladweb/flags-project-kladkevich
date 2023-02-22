@@ -104,9 +104,9 @@ export class Component {
     window.requestAnimationFrame(() => {
       this.ctx.textAlign = 'center';
       this.ctx.textBaseline = 'middle';
-      this.ctx.font = `${loadSize}px Arial`;
+      this.ctx.font = `${loadSize}px ${this.font}`;
       this.ctx.fillStyle = this.colors.osloGray;
-      this.ctx.fillText(`LOAD...`, offsetXLoader, offsetYLoader);
+      this.ctx.fillText('LOAD...', offsetXLoader, offsetYLoader);
     })
   }
 }

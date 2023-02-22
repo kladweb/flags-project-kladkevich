@@ -48,6 +48,6 @@ export class AjaxStringStorage {
       this.storageHost,
       fd
     );
-    console.log('result', result, result);
+    console.log('result', result);
   }
 }

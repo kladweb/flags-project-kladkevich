@@ -26,13 +26,10 @@ export class Game extends Component {
     this.score = 0; //текущее количество баллов
     this.live = 0;  //текущее (оставшееся) количество жизней
     this.answerOptions = []; //массив с вариантами ответов;
-    this.activeAnswer = [];   //активный вариант (на который наведена мышь);
+    this.activeAnswer = [];   //активный вариант (на который наведена мышь) для анимации наведения
     this.goBack = true; // можно ли уходить со страницы game;
     this.activeButton = [0, 0]  //для обработки наведения на кнопки меню после окончания игры
-    this.imgGame = {
-      human: null,
-      button: null
-    };
+    this.imgGame = {human: null, button: null};
   }
 
   initGame() {
@@ -231,9 +228,9 @@ export class Game extends Component {
     }
     let imageX = this.flagOffsetX + (this.flagWidth - imageWidth) / 2;
     let imageY = this.flagOffsetY + (this.flagHeight - imageHeight) / 2;
+    //анимация плавного появления флага
     if (this.currentRender[0] === -1) {
       let j = 0;
-      //анимация для плавного появления флага
       setTimeout(() => {
         let timerFlag = setInterval(() => {
           this.ctx.globalAlpha = j;
@@ -277,7 +274,6 @@ export class Game extends Component {
       let currentTextX = this.flagOffsetX + this.flagWidth - liveSize * String(this.live).length / 2;
       let currentTextY = this.flagOffsetY - this.frameWidth / 2 - liveSize;
       this.ctx.fillText(`${this.live}`, currentTextX, currentTextY);
-      // console.log(this.imgHuman);
       currentTextX -= liveSize * (String(this.live).length + 1.5) / 2;
       currentTextY -= liveSize * 0.6;
       this.ctx.drawImage(this.imgGame.human, currentTextX, currentTextY, liveSize, liveSize);
@@ -287,9 +283,9 @@ export class Game extends Component {
   getRandomAnswers() {
     this.activeAnswer[0] = 0;
     this.answerOptions[0] = this.activeFlag;
-    let randomVariants; //берем из оставшихся флагов, но в конце игры, когда флагов меньше, чем 4, берем из всех флагов
-    //из строки выше у нас есть массив с одним правильным ответом. Дополним этот массив другими рандомными
-    // вариантами ответов:
+    let randomVariants; //случайные варианты ответов this.answerOptions берем из оставшихся неразгаданных флагов, но
+    // в конце игры, когда флагов осталось 4 или менее, берем из всех флагов. "this.activeAnswer" - это массив с одним
+    // правильным ответом. Дополним этот массив другими рандомными вариантами ответов:
     for (let i = 1; i < this.nAnswers; i++) {
       let remainsFlags = Object.keys(this.unsolvedFlags).length;
       randomVariants = (remainsFlags > this.nAnswers) ? this.unsolvedFlags : this.flagsAll;

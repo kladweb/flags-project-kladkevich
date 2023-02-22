@@ -79,8 +79,7 @@ export class SettingsPage extends Component {
 
   checkClickCheck(e) {
     let zoom = this.calcZoom();
-
-    for (let j = 0; j < 2 + this.spa.media.isMobile; j++) {
+    for (let j = 0; j < (2 + this.spa.media.isMobile); j++) {
       if (this.checkBorders(e, zoom, j)) {
         this.showResult(j);
       }
@@ -113,8 +112,8 @@ export class SettingsPage extends Component {
   }
 
   showResult(num) {
+    //отправляем сеттеру массив [номер кнопки, состояние]
     this.spa.media.setMedia = (this.spa.media.settingsMedia[num] === 1) ? [num, 0] : [num, 1];
-    // this.spa.media.settingsMedia[num] = (this.spa.media.settingsMedia[num] === 1) ? 0 : 1;
     if (num === 1 && this.spa.media.settingsMedia[1] === 1) {
       this.spa.media.playClick(num);
     }
