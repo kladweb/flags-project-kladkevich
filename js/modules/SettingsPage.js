@@ -1,4 +1,4 @@
-import {Component} from './Component.js';
+import { Component } from './Component.js';
 
 export class SettingsPage extends Component {
   constructor(spa) {

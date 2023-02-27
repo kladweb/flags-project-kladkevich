@@ -1,4 +1,4 @@
-import {Component} from './Component.js';
+import { Component } from './Component.js';
 
 export class Game extends Component {
   constructor(spa) {
@@ -598,6 +598,8 @@ export class Game extends Component {
           clearTimeout(timerArrow3);
           this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
           this.currentRender = [1, num, this.colors.shiraz];
+          let correctNumber = this.answerOptions.indexOf(this.activeFlag)
+          this.renderResultColor(correctNumber, this.colors.green);
           this.continueGame();
         }
       }, 30);

@@ -1,4 +1,4 @@
-import {Spa} from './modules/Spa.js';
+import { Spa } from './modules/Spa.js';
 
 class App {
   static init() {

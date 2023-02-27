@@ -1,19 +1,21 @@
-import {SettingsPage} from "./SettingsPage.js";
-import {Score} from './Score.js';
-import {AjaxStringStorage} from './AjaxStringStorage.js';
-import {Multimedia} from "./Multimedia.js";
-import {MainMenu} from './MainMenu.js';
-import {Game} from './Game.js';
-import {About} from './About.js';
+import { SettingsPage } from "./SettingsPage.js";
+import { Score } from './Score.js';
+import { AjaxStringStorage } from './AjaxStringStorage.js';
+import { Multimedia } from "./Multimedia.js";
+import { MainMenu } from './MainMenu.js';
+import { Game } from './Game.js';
+import { About } from './About.js';
 
 export class Spa {
   constructor() {
     this.SPAStateH = null; //текущее состояние приложения
-    window.addEventListener('hashchange', this.switchToStateFromURLHash);
-    self = this;
   }
 
   initApp() {
+    this.switchToStateFromURLHashCont = this.switchToStateFromURLHash.bind(this);
+    this.warnUserCont = this.warnUser.bind(this);
+    this.askToBackCont = this.askToBack.bind(this);
+    window.addEventListener('hashchange', this.switchToStateFromURLHashCont);
     this.pageSet = new SettingsPage(this);
     this.pageSet.init();
     this.score = new Score(this);
@@ -35,19 +37,19 @@ export class Spa {
     }
     switch (this.SPAStateH.pageName) {
       case 'main':
-        self.startMainMenu();
+        this.startMainPage();
         break;
       case 'game':
-        self.startGamePage();
+        this.startGamePage();
         break;
       case 'hiScore':
-        self.startHiScorePage()
+        this.startHiScorePage()
         break;
       case 'settings':
-        self.startSettingsPage();
+        this.startSettingsPage();
         break;
       case 'about':
-        self.startAboutPage();
+        this.startAboutPage();
         break;
     }
   }
@@ -76,7 +78,7 @@ export class Spa {
     this.switchToState({pageName: 'about'});
   }
 
-  startMainMenu() {
+  startMainPage() {
     if (!this.main) {
       this.main = new MainMenu(this);
       this.main.initMenu();
@@ -87,8 +89,8 @@ export class Spa {
       this.game.removeListeners();
       this.game.removeFinishListeners();
       window.removeEventListener('resize', this.game.reRunGameCont);
-      window.removeEventListener('beforeunload', this.warnUser);
-      window.removeEventListener('popstate', this.askToBack);
+      window.removeEventListener('beforeunload', this.warnUserCont);
+      window.removeEventListener('popstate', this.askToBackCont);
     }
     if (this.score) {
       window.removeEventListener('resize', this.score.reRunAScoreCont);
@@ -113,8 +115,8 @@ export class Spa {
     if (this.pageSet) {
       this.pageSet.removeListeners();
     }
-    window.addEventListener('beforeunload', this.warnUser);
-    window.addEventListener('popstate', this.askToBack);
+    window.addEventListener('beforeunload', this.warnUserCont);
+    window.addEventListener('popstate', this.askToBackCont);
   }
 
   startHiScorePage() {
@@ -151,7 +153,7 @@ export class Spa {
   }
 
   warnUser(e) {
-    if (!self.game.goBack) {
+    if (!this.game.goBack) {
       e.returnValue = 'You have made changes. They will be lost if you continue.';
       return 'You have made changes. They will be lost if you continue.';
     } else {
@@ -159,20 +161,20 @@ export class Spa {
     }
   }
 
-  askToBack(e) {
-    if (!self.game.goBack) {
+  askToBack() {
+    if (!this.game.goBack) {
       let ask = confirm('You have made changes. Do you really want to go back?');
       if (ask) {
-        self.game.removeListeners();
-        self.game.canvas.removeEventListener('click', self.game.checkContinueCont);
-        window.removeEventListener('popstate', self.askToBack);
+        this.game.removeListeners();
+        this.game.canvas.removeEventListener('click', this.game.checkContinueCont);
+        window.removeEventListener('popstate', this.askToBackCont);
       } else {
-        window.removeEventListener('hashchange', self.switchToStateFromURLHash);
-        window.removeEventListener('popstate', self.askToBack);
-        self.switchToGamePage();
+        window.removeEventListener('hashchange', this.switchToStateFromURLHashCont);
+        window.removeEventListener('popstate', this.askToBackCont);
+        this.switchToGamePage();
         setTimeout(() => {
-          window.addEventListener('hashchange', self.switchToStateFromURLHash);
-          window.addEventListener('popstate', self.askToBack);
+          window.addEventListener('hashchange', this.switchToStateFromURLHashCont);
+          window.addEventListener('popstate', this.askToBackCont);
         }, 200);
       }
     }
@@ -193,7 +195,8 @@ export class Spa {
   }
 
   checkScore() {
-    if (this.game.score > this.score.scList[4].score) {
+    let numberWorstScore = this.score.scList.length - 1;
+    if (this.game.score > this.score.scList[numberWorstScore].score) {
       let currentName = prompt(
         'Congratulations!\n' +
         'You are in the high score table!\n' +
