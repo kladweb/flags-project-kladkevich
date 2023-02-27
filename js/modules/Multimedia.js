@@ -46,7 +46,7 @@ export class Multimedia {
 
   loadAudio() {
     for (let key in this.audioF) {
-      this.audioF[key] = new Audio(`../../sounds/${key}.mp3`);
+      this.audioF[key] = new Audio(`/sounds/${key}.mp3`);
     }
     this.audioF.melody.volume = 0.5;
     this.audioF.melody.loop = true;

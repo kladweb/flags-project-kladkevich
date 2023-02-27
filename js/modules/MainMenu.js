@@ -44,7 +44,7 @@ export class MainMenu extends Component {
   preloadImages(onAssetLoadCallback) {
     for (let key in this.imgM) {
       this.imgM[key] = new Image();
-      this.imgM[key].src = `img/shared/${key}.png`;
+      this.imgM[key].src = `/img/shared/${key}.png`;
       this.imgM[key].addEventListener('load', onAssetLoadCallback);
     }
   }
@@ -218,7 +218,7 @@ export class MainMenu extends Component {
     for (let i = 0; i <= 3; i++) {
       if (this.checkBorders(e, zoom, i)) {
         if (this.activeButton[i] !== 1) {
-          e.target.style.cursor = 'url(../img/cursors/earth-pointer.png), pointer';
+          e.target.style.cursor = 'url(/img/cursors/earth-pointer.png), pointer';
           this.ctx.globalAlpha = 1;
           this.renderButton(this.imgM.button, this.butOffsetX[i], this.butOffsetY[i], this.butWidth, this.butHeight);
           let currentTextX = this.butOffsetX[i] + this.butWidth / 2;
@@ -228,7 +228,7 @@ export class MainMenu extends Component {
         }
       } else {
         if (this.activeButton[i] === 1) {
-          e.target.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
+          e.target.style.cursor = 'url(/img/cursors/earth-cursor.png), default';
           this.renderMenu();
           this.activeButton[i] = 0;
         }

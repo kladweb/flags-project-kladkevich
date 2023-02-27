@@ -1,4 +1,4 @@
-import { Component } from './Component.js';
+import {Component} from './Component.js';
 
 export class Game extends Component {
   constructor(spa) {
@@ -55,7 +55,7 @@ export class Game extends Component {
   }
 
   loadFlags() {
-    $.ajax('../../json/flagsAll.json',
+    $.ajax('/json/flagsAll.json',
       {type: 'GET', dataType: 'json', success: this.getFlags.bind(this), error: this.errorHandler}
     );
   }
@@ -92,12 +92,12 @@ export class Game extends Component {
   preloadImages(onAssetLoadCallback) {
     for (let key in this.imgGame) {
       this.imgGame[key] = new Image();
-      this.imgGame[key].src = 'img/shared/' + key + '.png';
+      this.imgGame[key].src = `/img/shared/${key}.png`;
       this.imgGame[key].addEventListener('load', onAssetLoadCallback);
     }
     for (let key in this.flagsAll) {
       this.imgFlags[key] = new Image();
-      this.imgFlags[key].src = `../../img/flags/${key}.png`;
+      this.imgFlags[key].src = `/img/flags/${key}.png`;
       this.imgFlags[key].addEventListener('load', onAssetLoadCallback);
     }
   }
@@ -377,13 +377,13 @@ export class Game extends Component {
     for (let i = 0; i < this.nAnswers; i++) {
       if (this.checkBorders(e, zoom, i)) {
         if (this.activeAnswer[i] !== 1) {
-          e.target.style.cursor = 'url(../img/cursors/earth-pointer.png), pointer';
+          e.target.style.cursor = 'url(/img/cursors/earth-pointer.png), pointer';
           this.renderAnswer(i, this.colors.osloGrayL, this.colors.spicyMixL, this.colors.white);
           this.activeAnswer[i] = 1;
         }
       } else {
         if (this.activeAnswer[i] === 1) {
-          e.target.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
+          e.target.style.cursor = 'url(/img/cursors/earth-cursor.png), default';
           this.renderAnswer(i, this.colors.osloGray, this.colors.spicyMix, this.colors.gallery);
           this.activeAnswer[i] = 0;
         }
@@ -406,7 +406,7 @@ export class Game extends Component {
   }
 
   showResult(num) {
-    this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
+    this.canvas.style.cursor = 'url(/img/cursors/earth-cursor.png), default';
     this.goBack = false;
     this.removeListeners();
     let colorFrame;
@@ -603,7 +603,7 @@ export class Game extends Component {
         YCurrent[1] = YCurrent[1] + YInterval;
         if (YCurrent[1] >= YEnd[1]) {
           clearTimeout(timerArrow3);
-          this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
+          this.canvas.style.cursor = 'url(/img/cursors/earth-cursor.png), default';
           this.currentRender = [1, num, this.colors.shiraz];
           if (this.spa.media.settingsMedia[0] === 1) {
             let correctNumber = this.answerOptions.indexOf(this.activeFlag);
@@ -611,7 +611,11 @@ export class Game extends Component {
               this.renderResultColor(correctNumber, this.colors.green);
               setTimeout(() => {
                 this.continueGame();
-              }, 200);
+              }, 300);
+            }, 200);
+          } else {
+            setTimeout(() => {
+              this.continueGame();
             }, 300);
           }
         }
@@ -751,7 +755,7 @@ export class Game extends Component {
     for (let i = 0; i <= 1; i++) {
       if (this.checkBorders(e, zoom, i)) {
         if (this.activeButton[i] !== 1) {
-          e.target.style.cursor = 'url(../img/cursors/earth-pointer.png), pointer';
+          e.target.style.cursor = 'url(/img/cursors/earth-pointer.png), pointer';
           this.ctx.globalAlpha = 1;
           this.renderFinButton(this.imgGame.button, this.finButX[i], this.finButY, this.finButWidth, this.finButHeight);
           let currentTextX = this.finButX[i] + this.finButWidth / 2;
@@ -761,7 +765,7 @@ export class Game extends Component {
         }
       } else {
         if (this.activeButton[i] === 1) {
-          e.target.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
+          e.target.style.cursor = 'url(/img/cursors/earth-cursor.png), default';
           this.renderBackground();
           this.renderFrame();
           this.renderScore();

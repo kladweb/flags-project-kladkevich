@@ -48,7 +48,7 @@ export class SettingsPage extends Component {
   preloadImages(onAssetLoadCallback) {
     for (let key in this.imgSet) {
       this.imgSet[key] = new Image();
-      this.imgSet[key].src = 'img/shared/' + key + '.png';
+      this.imgSet[key].src = `/img/shared/${key}.png`;
       this.imgSet[key].addEventListener('load', onAssetLoadCallback);
     }
   }
@@ -120,6 +120,10 @@ export class SettingsPage extends Component {
     if (num === 3 && this.spa.media.settingsMedia[3] === 1) {
       this.spa.media.playClick(num);
     }
+    if (num === 0 || num === 1) {
+      this.spa.media.playClick(num);
+    }
+
     this.spa.media.saveSettings();
     this.renderBackground();
     this.renderSetPage();

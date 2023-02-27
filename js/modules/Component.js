@@ -42,7 +42,7 @@ export class Component {
 
   preloadSetPageData(callback) {
     this.imageBackground = new Image();
-    this.imageBackground.src = '../img/shared/background.png';
+    this.imageBackground.src = '/img/shared/background.png';
     this.imageBackground.addEventListener('load', callback);
   }
 
@@ -83,7 +83,7 @@ export class Component {
   }
 
   setCursor() {
-    this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
+    this.canvas.style.cursor = 'url(/img/cursors/earth-cursor.png), default';
   }
 
   renderBackground(Alpha = 0.75) {
