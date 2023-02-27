@@ -79,7 +79,7 @@ export class SettingsPage extends Component {
 
   checkClickCheck(e) {
     let zoom = this.calcZoom();
-    for (let j = 0; j < (2 + this.spa.media.isMobile); j++) {
+    for (let j = 0; j < (3 + this.spa.media.isMobile); j++) {
       if (this.checkBorders(e, zoom, j)) {
         this.showResult(j);
       }
@@ -114,10 +114,10 @@ export class SettingsPage extends Component {
   showResult(num) {
     //отправляем сеттеру массив [номер кнопки, состояние]
     this.spa.media.setMedia = (this.spa.media.settingsMedia[num] === 1) ? [num, 0] : [num, 1];
-    if (num === 1 && this.spa.media.settingsMedia[1] === 1) {
+    if (num === 2 && this.spa.media.settingsMedia[2] === 1) {
       this.spa.media.playClick(num);
     }
-    if (num === 2 && this.spa.media.settingsMedia[2] === 1) {
+    if (num === 3 && this.spa.media.settingsMedia[3] === 1) {
       this.spa.media.playClick(num);
     }
     this.spa.media.saveSettings();
@@ -129,12 +129,12 @@ export class SettingsPage extends Component {
     let aspectRatioWindow = window.innerWidth / window.innerHeight;
     if (aspectRatioWindow <= 0.5) {
       this.textSetSize = this.width / 25;
-      this.X1 = this.width / 4.5;
+      this.X1 = this.width / 8;
       this.Y1 = this.textSetSize * 5;
     }
     if (aspectRatioWindow > 0.5 && aspectRatioWindow <= 1) {
       this.textSetSize = this.width / 30;
-      this.X1 = this.width / 4;
+      this.X1 = this.width / 7;
       this.Y1 = this.textSetSize * 4.5;
     }
     if (aspectRatioWindow > 1 && aspectRatioWindow <= 1.5) {
@@ -144,7 +144,7 @@ export class SettingsPage extends Component {
     }
     if (aspectRatioWindow > 1.5) {
       this.textSetSize = this.height / 30;
-      this.X1 = this.width / 3;
+      this.X1 = this.width / 4;
       this.Y1 = this.textSetSize * 3;
     }
     this.X2 = this.width - this.X1 - this.textSetSize * 1.5;
@@ -155,38 +155,43 @@ export class SettingsPage extends Component {
     let Al = 'center';
     let text0 = 'GAME SETTINGS';
     this.renderSetText(text0, currentX, currentY, this.textSetSize * 2, this.colors.green, Al);
-    let text1 = 'MUSIC';
+    let text1 = 'SHOW CORRECT ANSWER';
     this.Y = [];
-    this.Y[0] = this.Y1 + this.textSetSize * 5 - this.checkSize / 1.5;
+    this.Y[0] = this.Y1 + this.textSetSize * 5 - this.checkSize / 0.8;
     Al = 'left';
-    let currYText = this.Y[0] + this.checkSize / 1.5;
+    let currYText = this.Y[0] + this.checkSize / 1.8;
     this.renderSetText(text1, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
     this.renderChecked(this.checkedImg[this.spa.media.settingsMedia[0]], this.X2, this.Y[0]);
-    this.Y[1] = this.Y[0] + this.textSetSize * 5;
-    let text2 = 'SOUNDS';
-    currYText = this.Y[1] + this.checkSize / 1.5;
+    this.Y[1] = this.Y[0] + this.textSetSize * 4;
+    let text2 = 'MUSIC';
+    currYText = this.Y[1] + this.checkSize / 1.8;
     this.renderSetText(text2, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
     this.renderChecked(this.checkedImg[this.spa.media.settingsMedia[1]], this.X2, this.Y[1]);
-    this.Y[2] = this.Y[1] + this.textSetSize * 5;
-    let text3 = 'VIBRATION';
-    let text4 = '(only for phones)';
-    currYText = this.Y[2] + this.checkSize / 1.5;
+    this.Y[2] = this.Y[1] + this.textSetSize * 4;
+    let text3 = 'SOUNDS';
+    currYText = this.Y[2] + this.checkSize / 1.8;
     this.renderSetText(text3, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
+    this.renderChecked(this.checkedImg[this.spa.media.settingsMedia[2]], this.X2, this.Y[2]);
+    this.Y[3] = this.Y[2] + this.textSetSize * 4;
+    let text4 = 'VIBRATION';
+    currYText = this.Y[3] + this.checkSize / 1.8;
+    this.renderSetText(text4, this.X1, currYText, this.textSetSize * 1.5, this.colors.osloGrayL, Al);
     currYText += this.textSetSize * 1.5;
-    this.renderSetText(text4, this.X1, currYText, this.textSetSize, this.colors.osloGrayL, Al);
+    let text5 = '(only for phones)';
+    this.renderSetText(text5, this.X1, currYText, this.textSetSize, this.colors.osloGrayL, Al);
     let Alpha = (this.spa.media.isMobile) ? 1 : 0.2;
-    this.renderChecked(this.checkedImg[this.spa.media.settingsMedia[2]], this.X2, this.Y[2], Alpha);
+    this.renderChecked(this.checkedImg[this.spa.media.settingsMedia[3]], this.X2, this.Y[3], Alpha);
     this.butY = this.height - this.textSetSize * 5;
     let aspectRatioButton = this.imgSet.button.width / this.imgSet.button.height;
     this.buttonHeight = this.checkSize;
     this.buttonWidth = this.buttonHeight * aspectRatioButton;
     this.butX = (this.width - this.buttonWidth) / 2;
     this.renderButtonReturn(this.butX, this.butY);
-    let text5 = 'HOME';
+    let text6 = 'HOME';
     Al = 'center';
     currentX = this.butX + this.buttonWidth / 2;
     currentY = this.butY + this.buttonHeight / 2;
-    this.renderSetText(text5, currentX, currentY, this.textSetSize / 1.2, this.colors.gallery, Al);
+    this.renderSetText(text6, currentX, currentY, this.textSetSize / 1.2, this.colors.gallery, Al);
   }
 
   renderButtonReturn(X, Y) {

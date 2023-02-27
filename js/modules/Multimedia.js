@@ -7,10 +7,11 @@ export class Multimedia {
       click: null
     }
     this.storageName = 'settFlagGame';
-    this.settingsMedia = [1, 1, 1];  //загружаются и сохраняются в localStorage
-    // this.settingsMedia[0] = 1; //музыка включена  0 - музыка выключена (значение параметра);
-    // this.settingsMedia[1] = 1; //звуки включены
-    // this.settingsMedia[2] = 1; //вибрация включена
+    this.settingsMedia = [1, 1, 1, 1];  //загружаются и сохраняются в localStorage
+    // this.settingsMedia[0] = 1; //показывать правильный ответ
+    // this.settingsMedia[1] = 1; //музыка включена  0 - музыка выключена (значение параметра);
+    // this.settingsMedia[2] = 1; //звуки включены
+    // this.settingsMedia[3] = 1; //вибрация включена
     // this.isMobile;  //является ли устройство мобильным (для включения возможностей вибро);
   }
 
@@ -31,8 +32,11 @@ export class Multimedia {
     if (storageLocalString) {
       this.settingsMedia = JSON.parse(storageLocalString);
     }
+    if (this.settingsMedia.length !== 4) {
+      this.settingsMedia = [1, 1, 1, 1];
+    }
     if (!this.isMobile) {
-      this.setMedia = [2, 0];
+      this.setMedia = [3, 0];
     }
   }
 
@@ -52,37 +56,37 @@ export class Multimedia {
   }
 
   playMelody() {
-    if (this.settingsMedia[0] === 1) {
+    if (this.settingsMedia[1] === 1) {
       this.audioF.melody.play();
     }
-    if (this.settingsMedia[0] === 0) {
+    if (this.settingsMedia[1] === 0) {
       this.audioF.melody.pause();
     }
   }
 
   playClick(n = 0) {
-    if (this.settingsMedia[1] === 1 && n !== 2) {
+    if (this.settingsMedia[2] === 1 && n !== 3) {
       this.audioF.click.play();
     }
-    if (this.settingsMedia[2] === 1 && n !== 1) {
+    if (this.settingsMedia[3] === 1 && n !== 2) {
       window.navigator.vibrate(10);
     }
   }
 
   playWrong() {
-    if (this.settingsMedia[1] === 1) {
+    if (this.settingsMedia[2] === 1) {
       this.audioF.wrong.play();
     }
-    if (this.settingsMedia[2] === 1) {
+    if (this.settingsMedia[3] === 1) {
       window.navigator.vibrate([10, 1000, 150]);
     }
   }
 
   playGood() {
-    if (this.settingsMedia[1] === 1) {
+    if (this.settingsMedia[2] === 1) {
       this.audioF.good.play();
     }
-    if (this.settingsMedia[2] === 1) {
+    if (this.settingsMedia[3] === 1) {
       window.navigator.vibrate([10, 1000, 10, 50, 10, 50, 10]);
     }
   }

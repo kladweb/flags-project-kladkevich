@@ -542,7 +542,9 @@ export class Game extends Component {
         if (YCurrent <= YEnd || XCurrent >= XEnd) {
           clearTimeout(timerArrow2);
           this.currentRender = [2, num, this.colors.green];
-          this.continueGame();
+          setTimeout(() => {
+            this.continueGame();
+          }, 200);
         }
       }, 40);
     }
@@ -578,6 +580,11 @@ export class Game extends Component {
             this.ctx.stroke();
           }
         }
+        let corrNumber = this.answerOptions.indexOf(this.activeFlag);
+        this.ctx.strokeStyle = this.colors.green;
+        this.ctx.lineWidth = this.boxFrameSize;
+        this.ctx.lineJoin = 'round';
+        this.ctx.strokeRect(this.boxOffsetX[corrNumber], this.boxOffsetY[corrNumber], this.boxWidth, this.boxHeight);
       });
     } else {
       let timerArrow3 = setInterval(() => {
@@ -598,9 +605,15 @@ export class Game extends Component {
           clearTimeout(timerArrow3);
           this.canvas.style.cursor = 'url(../img/cursors/earth-cursor.png), default';
           this.currentRender = [1, num, this.colors.shiraz];
-          let correctNumber = this.answerOptions.indexOf(this.activeFlag)
-          this.renderResultColor(correctNumber, this.colors.green);
-          this.continueGame();
+          if (this.spa.media.settingsMedia[0] === 1) {
+            let correctNumber = this.answerOptions.indexOf(this.activeFlag);
+            setTimeout(() => {
+              this.renderResultColor(correctNumber, this.colors.green);
+              setTimeout(() => {
+                this.continueGame();
+              }, 200);
+            }, 300);
+          }
         }
       }, 30);
     }
@@ -625,6 +638,7 @@ export class Game extends Component {
       this.ctx.fillStyle = this.colors.osloGray;
       let currentTextX = this.flagOffsetX + this.flagWidth / 2;
       let currentTextY = this.boxOffsetY[this.boxOffsetY.length - 1] + this.boxHeight + infoSize;
+      this.ctx.globalAlpha = 1;
       this.ctx.fillText(`TAP or CLICK to CONTINUE...`, currentTextX, currentTextY);
     });
   }
