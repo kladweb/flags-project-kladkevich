@@ -215,6 +215,9 @@ export class Spa {
             numberWorstScore = index;
           }
         });
+        if (this.score.scList[numberWorstScore].score >= this.game.score) {
+          return;
+        }
         this.score.scList[numberWorstScore] = {
           'user': currentName,
           'score': this.game.score,
