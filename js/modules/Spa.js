@@ -1,10 +1,10 @@
-import { SettingsPage } from "./SettingsPage.js";
-import { Score } from './Score.js';
-import { AjaxStringStorage } from './AjaxStringStorage.js';
-import { Multimedia } from "./Multimedia.js";
-import { MainMenu } from './MainMenu.js';
-import { Game } from './Game.js';
-import { About } from './About.js';
+import {SettingsPage} from "./SettingsPage.js";
+import {Score} from './Score.js';
+import {AjaxStringStorage} from './AjaxStringStorage.js';
+import {Multimedia} from "./Multimedia.js";
+import {MainMenu} from './MainMenu.js';
+import {Game} from './Game.js';
+import {About} from './About.js';
 
 export class Spa {
   constructor() {
@@ -210,7 +210,12 @@ export class Spa {
         nowMonth = (nowMonth.length === 2) ? (nowMonth) : (`0${nowMonth}`);
         let nowYear = now.getFullYear().toString();
         let currentDate = `${nowDate}.${nowMonth}.${nowYear}`;
-        this.score.scList[4] = {
+        this.score.scList.forEach((person, index) => {
+          if (person.user === currentName) {
+            numberWorstScore = index;
+          }
+        });
+        this.score.scList[numberWorstScore] = {
           'user': currentName,
           'score': this.game.score,
           'date': currentDate
