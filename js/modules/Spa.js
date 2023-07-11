@@ -111,6 +111,7 @@ export class Spa {
     this.game.initGame();
     if (this.main) {
       this.main.removeListeners();
+      window.removeEventListener('resize', this.main.reRunMenuCont);
     }
     if (this.pageSet) {
       this.pageSet.removeListeners();

@@ -202,6 +202,7 @@ export class MainMenu extends Component {
   removeListeners() {
     this.canvas.removeEventListener('click', this.checkClickAnswerThis);
     this.canvas.removeEventListener('mousemove', this.checkMoveAnswerThis);
+
   }
 
   checkClickAnswer(e) {
